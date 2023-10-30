@@ -3,14 +3,17 @@ import { View } from "react-native";
 import { style } from "./style";
 import { TextInput } from "react-native-paper";
 import { Pressable } from "react-native";
-
-export const LoginForm = () => {
+import React from "react";
+export const LoginForm = ({navigation}:{navigation:any}) => {
+  const handleSignupForm = ()=>{
+    navigation.navigate('signup')
+  }
   return (
     <View style={style.container}>
       <View style={style.loginContainer}>
         <View style={{alignSelf:'flex-start'}}>
           <Image
-            source={require("../../assets/twitter.png")}
+            source={require("../../../assets/twitter.png")}
             style={style.logoLogin}
           />
         </View>
@@ -43,7 +46,7 @@ export const LoginForm = () => {
             </Pressable>
           </View>
           <View>
-            <Pressable style={style.buttonSignup}>
+            <Pressable style={style.buttonSignup} onPress={handleSignupForm}>
               <Text style={style.text}>signup</Text>
             </Pressable>
           </View>
