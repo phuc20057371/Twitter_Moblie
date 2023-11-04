@@ -5,6 +5,8 @@ import { Feather } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 import { EvilIcons } from '@expo/vector-icons';
 
+const user = { id: '@huongquadeo', fuleName: 'Nguyễn Huỳnh Hương', email: 'huongquadeo@gmail.com', profile: require('../../../../../client/assets/Huong.png'), }
+
 var data = [
     {
         name: 'Nguyễn Huỳnh Hương', id: '@huongquadeo', description: 'Chồng tôi đẹp trai quá',
@@ -21,22 +23,19 @@ var data = [
         cmt: [
             { id: '@huongquadeo', name: 'Nguyễn Huỳnh Hương', Content: 'Trời đất ơi', at: '6:45PM' }
         ]
-    },
-    {
-        name: 'Nguyễn Huỳnh Hương', id: '@huongquadeo', description: 'Chồng tôi đẹp trai quá',
-        img: require('../../../../../client/assets/Doflamingo.jpg'), like: 999,
-        profile: require('../../../../../client/assets/Huong.png'),
-        cmt: [
-            { id: '@phuc', name: 'Võ Hồng Phúc', Content: 'Thua mèo t nhé', at: '4:45PM' }
-        ]
-    },
+    }
 
 
 ]
 
-function Feed() {
+function Feed({ navigation }: { navigation: any }) {
+    //    const navigation = useNavigation();
+
+    const navigateToProfile = () => {
+        navigation.navigate('Profile');
+    }
     return (
-        <View style={{flex:1}}>
+        <View style={{ flex: 1 }}>
             <View
                 style={{
                     flex: 2,
@@ -46,17 +45,19 @@ function Feed() {
                     gap: 10,
                     justifyContent: 'center',
                     alignItems: 'center'
-                }}
-            >
-                <Image
-                    style={{
-                        width: 60,
-                        height: 60,
-                        borderWidth: 1,
-                        borderRadius: 50
-                    }}
-                    source={data[0].profile}
-                />
+                }}>
+                <TouchableOpacity onPress={navigateToProfile}>
+                    <Image
+                        style={{
+                            width: 60,
+                            height: 60,
+                            borderWidth: 1,
+                            borderRadius: 50
+                        }}
+                        source={user.profile}
+                    />
+                </TouchableOpacity>
+
                 <View style={{
                 }}>
                     <TextInput style={{
@@ -104,39 +105,49 @@ function Feed() {
                             height: 3
                         },
                         shadowRadius: 5,
-                    }}>
-                        <TouchableOpacity style={{
-                            width: '20%',
-                            paddingLeft: 15,
-                            
-
-                        }}>
-                            <Image
-                                style={{
-                                    width: 50,
-                                    height: 50,
-                                    borderWidth: 0.5,
-                                    borderRadius: 30,
+                    }} >
+                        <View>
+                            <TouchableOpacity style={{
+                                width: '20%',
+                                paddingLeft: 30,
+                                alignItems: 'center',
 
 
-                                }}
-                                source={item.profile}
-                            />
-                        </TouchableOpacity>
+                            }}>
+                                <Image
+                                    style={{
+                                        width: 50,
+                                        height: 50,
+                                        borderWidth: 0.5,
+                                        borderRadius: 30,
+
+
+                                    }}
+                                    source={item.profile}
+                                />
+                            </TouchableOpacity>
+                        </View>
                         <View style={{
                             width: '80%',
 
 
                         }}>
-                            <View style={{ flexDirection: 'row' }}>
+                            <View style={{ flexDirection: 'row', gap:5 }}>
+                                <TouchableOpacity>
+                                    <Text style={{
+                                        fontWeight: 'bold'
+                                    }}>{item.name}</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity>
+                                    <Text style={{
+                                        color: '#B1B1B1'
+                                    }}>{item.id}</Text>
+                                </TouchableOpacity>
 
-                                <Text>{item.name}</Text>
-                                <Text>{item.id}</Text>
                             </View>
                             <View style={{}}>
                                 <Text>{item.description}</Text>
                                 <TouchableOpacity style={{
-
                                     paddingTop: 10
                                 }}>
                                     <Image
@@ -185,8 +196,48 @@ function Feed() {
                                 </TouchableOpacity>
 
                             </View>
+                            <View
+                                style={{
+                                    flex: 2,
+                                    flexDirection: 'row',
+                                    marginTop: 5,
+                                    marginBottom: 30,
+                                    gap: 10,
+    //                                justifyContent: 'center',
+                                    alignItems: 'center'
+                                }}>
+                                <TouchableOpacity onPress={navigateToProfile}>
+                                    <Image
+                                        style={{
+                                            width: 25,
+                                            height: 25,
+                                            borderWidth: 1,
+                                            borderRadius: 50
+                                        }}
+                                        source={user.profile}
+                                    />
+                                </TouchableOpacity>
+
+                                <View style={{
+                                }}>
+                                    <TextInput style={{
+                                        width: 200,
+                                        height: 40,
+                                        paddingLeft: 10
+
+                                    }}
+                                        placeholder='Thêm bình luận'
+                                        placeholderTextColor='grey'
+                                    >
+
+                                    </TextInput>
+                                </View>
+                                
+                            </View>
                         </View>
+
                     </View>
+
                 }
 
             />
