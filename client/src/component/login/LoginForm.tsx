@@ -8,6 +8,9 @@ export const LoginForm = ({navigation}:{navigation:any}) => {
   const handleSignupForm = ()=>{
     navigation.navigate('signup')
   }
+  const handleHome = ()=>{
+    navigation.navigate('Tabs')
+  }
   return (
     <View style={style.container}>
       <View style={style.loginContainer}>
@@ -41,7 +44,7 @@ export const LoginForm = ({navigation}:{navigation:any}) => {
         </View>
         <View>
           <View style={style.conatinerInput}>
-            <Pressable style={style.buttonLogin}>
+            <Pressable style={style.buttonLogin} onPress={handleHome}>
               <Text style={style.text}>login</Text>
             </Pressable>
           </View>
