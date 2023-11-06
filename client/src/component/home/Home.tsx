@@ -10,6 +10,7 @@ import Notifications from './tab/Notifications';
 import Profile from './tab/Profile';
 import Search from './tab/Search';
 
+
 const Tab = createMaterialBottomTabNavigator();
 
 function MyTabs() {

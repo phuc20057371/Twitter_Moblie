@@ -34,8 +34,11 @@ function Feed({ navigation }: { navigation: any }) {
     const navigateToProfile = () => {
         navigation.navigate('Profile');
     }
+    const navigateToTweet = () => {
+        navigation.navigate('Tweet');
+    }
     return (
-        <View style={{ flex: 1 }}>
+        <View style={{ flex: 1 , backgroundColor:'white'}}>
             <View
                 style={{
                     flex: 2,
@@ -82,6 +85,7 @@ function Feed({ navigation }: { navigation: any }) {
                 }}>
                     <TouchableOpacity
                         style={{}}
+                        onPress={navigateToTweet}
                     >
 
                         <Feather name="image" size={40} color="black" />
@@ -95,6 +99,7 @@ function Feed({ navigation }: { navigation: any }) {
             <FlatList data={data}
                 renderItem={({ item }) =>
                     <View style={{
+               
                         flexDirection: 'row',
                         borderRadius: 30,
                         padding: 5,
