@@ -1,105 +1,154 @@
 import * as React from 'react';
+import { useEffect, useState } from 'react';
 import { TouchableOpacity, FlatList, ScrollView } from 'react-native';
-import { Text, View, Image, TextInput } from 'react-native';
+import { useFocusEffect, useRoute } from '@react-navigation/native';
+import { Text, View, Image } from 'react-native';
+import { TextInput } from 'react-native-paper';
 import { Feather } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 import { EvilIcons } from '@expo/vector-icons';
-
-const user = { id: '@huongquadeo', fuleName: 'Nguyễn Huỳnh Hương', email: 'huongquadeo@gmail.com', profile: require('../../../../../client/assets/Huong.png'), }
-
-var data = [
-    {
-        name: 'Nguyễn Huỳnh Hương', id: '@huongquadeo', description: 'Chồng tôi đẹp trai quá',
-        img: require('../../../../../client/assets/Doflamingo.jpg'), like: 999,
-        profile: require('../../../../../client/assets/Huong.png'),
-        cmt: [
-            { id: '@phuc', name: 'Võ Hồng Phúc', Content: 'Thua mèo t nhé', at: '4:45PM' }
-        ]
-    },
-    {
-        name: 'Võ Hồng Phúc', id: '@phuc', description: 'Hello mọi người',
-        img: require('../../../../../client/assets/meo.jpg'), like: 1000,
-        profile: require('../../../../../client/assets/Phuc.png'),
-        cmt: [
-            { id: '@huongquadeo', name: 'Nguyễn Huỳnh Hương', Content: 'Trời đất ơi', at: '6:45PM' }
-        ]
-    }
+import axios from 'axios';
+import io from 'socket.io-client';
 
 
-]
+
+// const apiURL = 'https://6544a3ea5a0b4b04436ca3b6.mockapi.io/User/1'
+// const apiURL2 = 'https://6544a3ea5a0b4b04436ca3b6.mockapi.io/User/1/Tweet'
+ var user = { 
+   // id: 'huongquadeo', fullName: 'Nguyễn Huỳnh Hương', email: 'huongquadeo@gmail.com', profile: 'https://res.cloudinary.com/djuwysj2y/image/upload/v1699265075/onoodmvs44ociyrnrzyq.jpg', 
+}
+var data = [{}]
+
+const footer = () => {
+    return (
+        <View style={{ flex: 1, height: 500, backgroundColor: 'yellow' }}>
+            <Text>Footer</Text>
+        </View>
+    )
+}
 
 function Feed({ navigation }: { navigation: any }) {
-    //    const navigation = useNavigation();
-
+    const route = useRoute();
+    var [u, setUser] = useState(Object);
+    var [t, setTweet] = useState([]);
+    var [like, setLike] = useState('hearto');
+    
+    useEffect(() => {
+        axios.get('http://localhost:3001/data')
+            .then(response => {
+                const sort =response.data.sort((a:any,b:any)=>b.id-a.id)
+                setTweet(sort)
+                console.log(response.data)
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    }, [route.params?.data]);
+    useEffect(() => {   
+        axios.get('http://localhost:3001/user')
+            .then(response => {
+                
+                setUser(response.data)
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    }, [])
+    function checkLike(item: any) {
+        for (var i = 0; i < item.length; i++) {
+            if (item[i].username == u.username) {
+                setLike('heart')
+                return 'heart'
+            }
+        }
+        setLike('hearto')
+        return 'hearto'
+    }
     const navigateToProfile = () => {
         navigation.navigate('Profile');
     }
     const navigateToTweet = () => {
-        navigation.navigate('Tweet');
+        navigation.navigate('Tweet', { user: u });
     }
+
     return (
-        <View style={{ flex: 1 , backgroundColor:'white'}}>
-            <View
-                style={{
-                    flex: 2,
-                    flexDirection: 'row',
-                    marginTop: 30,
-                    marginBottom: 30,
-                    gap: 10,
-                    justifyContent: 'center',
-                    alignItems: 'center'
-                }}>
-                <TouchableOpacity onPress={navigateToProfile}>
-                    <Image
-                        style={{
-                            width: 60,
-                            height: 60,
-                            borderWidth: 1,
-                            borderRadius: 50
-                        }}
-                        source={user.profile}
-                    />
-                </TouchableOpacity>
-
-                <View style={{
-                }}>
-                    <TextInput style={{
-                        width: 250,
-                        height: 50,
-                        borderWidth: 0.5,
-                        borderRadius: 10,
-                        borderColor: 'gray',
-                        paddingLeft: 10
-
-                    }}
-                        placeholder='Bạn đang nghĩ gì ?'
-                        placeholderTextColor='grey'
-                    >
-
-                    </TextInput>
-                </View>
-                <View style={{
-                    justifyContent: 'center',
-                    alignItems: 'center',
-
-                }}>
-                    <TouchableOpacity
-                        style={{}}
-                        onPress={navigateToTweet}
-                    >
-
-                        <Feather name="image" size={40} color="black" />
-                    </TouchableOpacity>
-                </View>
+        <View style={{ flex: 1, backgroundColor: 'white', width: '100%' }}>
 
 
+            <FlatList data={t}
+                ListHeaderComponent={() => {
+                    return (
+                        <View
+                            style={{
+                                flex: 2,
+                                flexDirection: 'row',
+                                marginTop: 30,
+                                marginBottom: 10,
+                                gap: 10,
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                width: '100%'
+                            }}>
 
-            </View>
+                            <TouchableOpacity
+                                style={{
+                                    width: '20%',
+                                }}
+                                onPress={navigateToProfile}>
 
-            <FlatList data={data}
+                                <Image
+                                    style={{
+                                        width: 60,
+                                        height: 60,
+                                        borderWidth: 1,
+                                        borderRadius: 50,
+                                    }}
+                                    source={{ uri: u.profile }}
+                                />
+                            </TouchableOpacity>
+
+                            <View style={{
+                                width: '50%',
+                            }}>
+
+                                <TouchableOpacity style={{
+                                    height: 70,
+                                    justifyContent: 'center',
+                                }}
+                                    onPress={navigateToTweet}
+                                >
+                                    <Text style={{
+                                        color: 'grey',
+                                        fontSize: 20,
+                                    }}>
+                                        Bạn đang nghĩ gì ?
+                                    </Text>
+                                </TouchableOpacity>
+                            </View>
+                            <View style={{
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                width: '20%',
+
+                            }}>
+                                <TouchableOpacity
+                                    style={{}}
+                                    onPress={navigateToTweet}
+                                >
+
+                                    <Feather name="image" size={40} color="black" />
+                                </TouchableOpacity>
+                            </View>
+
+
+
+                        </View>
+                    )
+                }}
+                ListFooterComponent={footer}
                 renderItem={({ item }) =>
                     <View style={{
-               
+
                         flexDirection: 'row',
                         borderRadius: 30,
                         padding: 5,
@@ -128,7 +177,7 @@ function Feed({ navigation }: { navigation: any }) {
 
 
                                     }}
-                                    source={item.profile}
+                                    source={{ uri: item.profile }}
                                 />
                             </TouchableOpacity>
                         </View>
@@ -137,7 +186,7 @@ function Feed({ navigation }: { navigation: any }) {
 
 
                         }}>
-                            <View style={{ flexDirection: 'row', gap:5 }}>
+                            <View style={{ flexDirection: 'row', gap: 5 }}>
                                 <TouchableOpacity>
                                     <Text style={{
                                         fontWeight: 'bold'
@@ -146,7 +195,7 @@ function Feed({ navigation }: { navigation: any }) {
                                 <TouchableOpacity>
                                     <Text style={{
                                         color: '#B1B1B1'
-                                    }}>{item.id}</Text>
+                                    }}>@{item.username}</Text>
                                 </TouchableOpacity>
 
                             </View>
@@ -164,7 +213,7 @@ function Feed({ navigation }: { navigation: any }) {
                                             borderRadius: 20,
                                             //borderColor:'white'
                                         }}
-                                        source={item.img}
+                                        source={{ uri: item.img }}
                                     />
                                 </TouchableOpacity>
 
@@ -179,17 +228,32 @@ function Feed({ navigation }: { navigation: any }) {
                                     flexDirection: 'row',
                                     alignItems: 'center',
                                     gap: 10
-                                }}>
-                                    <AntDesign name="hearto" size={24} color="black" />
-                                    <Text>{item.like}</Text>
+                                }}
+                                    onPress={() => {
+                                        if (like == 'heart') {
+
+                                            setLike('hearto')
+                                        }
+                                        else {
+                                            setLike('heart')
+                                        }
+
+                                    }}
+                                >
+                                    <AntDesign name={like} size={24} color="black" />
+                                    <Text>{item && item.like ? item.like.length : 0}</Text>
                                 </TouchableOpacity>
                                 <TouchableOpacity style={{
                                     flexDirection: 'row',
                                     alignItems: 'center',
                                     gap: 10
-                                }}>
+                                }}
+                                    onPress={() => {
+                                        navigation.navigate('TweetDetail', { user: u, tweet: item, listLike: item.like, listCmt: item.cmt })
+                                    }}
+                                >
                                     <EvilIcons name="comment" size={30} color="black" />
-                                    <Text>{item.cmt.length}</Text>
+                                    <Text>{item && item.cmt ? item.cmt.length : 0}</Text>
                                 </TouchableOpacity>
                                 <TouchableOpacity style={{
                                     flexDirection: 'row',
@@ -197,7 +261,7 @@ function Feed({ navigation }: { navigation: any }) {
                                     gap: 10
                                 }}>
                                     <AntDesign name="staro" size={24} color="black" />
-                                    <Text>{item.like}</Text>
+                                    <Text>{item && item.cmt ? item.cmt.length : 0}</Text>
                                 </TouchableOpacity>
 
                             </View>
@@ -208,7 +272,7 @@ function Feed({ navigation }: { navigation: any }) {
                                     marginTop: 5,
                                     marginBottom: 30,
                                     gap: 10,
-    //                                justifyContent: 'center',
+                                    //                                justifyContent: 'center',
                                     alignItems: 'center'
                                 }}>
                                 <TouchableOpacity onPress={navigateToProfile}>
@@ -219,25 +283,24 @@ function Feed({ navigation }: { navigation: any }) {
                                             borderWidth: 1,
                                             borderRadius: 50
                                         }}
-                                        source={user.profile}
+                                        source={{ uri: u.profile }}
                                     />
                                 </TouchableOpacity>
 
                                 <View style={{
                                 }}>
                                     <TextInput style={{
-                                        width: 200,
-                                        height: 40,
-                                        paddingLeft: 10
-
+                                        width: 180,
+                                        height: 50,
+                                        backgroundColor: 'white',
                                     }}
-                                        placeholder='Thêm bình luận'
+                                        underlineColor="transparent"
+                                        theme={{ colors: { primary: "transparent" } }}
+                                        placeholder="Thêm bình luận"
                                         placeholderTextColor='grey'
-                                    >
-
-                                    </TextInput>
+                                        multiline={true} />
                                 </View>
-                                
+
                             </View>
                         </View>
 
@@ -246,6 +309,7 @@ function Feed({ navigation }: { navigation: any }) {
                 }
 
             />
+
         </View>
     );
 }

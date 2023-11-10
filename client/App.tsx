@@ -7,7 +7,7 @@ import { EditProfile } from "./src/component/edit/EditProfile";
 import MyTabs from "./src/component/home/Home"
 import AppHeader from "./src/component/home/AppHeader";
 import Tweet from "./src/component/home/tab/tweet/Tweet";
-
+import TweetDetail from "./src/component/home/tab/tweet/TweetDetail";
 export default function App() {
   const Stack = createStackNavigator();
 
@@ -45,6 +45,8 @@ export default function App() {
           options={{ header: () => <AppHeader /> }}
         />
         <Stack.Screen name="Tweet" component={Tweet}
+        />
+        <Stack.Screen name="TweetDetail" component={TweetDetail}
         />
       </Stack.Navigator>
     </NavigationContainer>

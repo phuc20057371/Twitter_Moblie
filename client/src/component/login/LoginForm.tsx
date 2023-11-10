@@ -4,7 +4,11 @@ import { style } from "./style";
 import { TextInput } from "react-native-paper";
 import { Pressable } from "react-native";
 import React from "react";
+import { useEffect, useState } from 'react';
 export const LoginForm = ({navigation}:{navigation:any}) => {
+  var [username, setUsername] = useState('');
+  var [password, setPassword] = useState('');
+
   const handleSignupForm = ()=>{
     navigation.navigate('signup')
   }
@@ -45,7 +49,7 @@ export const LoginForm = ({navigation}:{navigation:any}) => {
         <View>
           <View style={style.conatinerInput}>
             <Pressable style={style.buttonLogin} onPress={handleHome}>
-              <Text style={style.text}>login</Text>
+              <TextInput style={style.text}>login</TextInput>
             </Pressable>
           </View>
           <View>
