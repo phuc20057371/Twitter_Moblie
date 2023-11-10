@@ -97,10 +97,21 @@
       "cmt": []
     }
   ],
-  "user": {
-    "username": "huongquadeo",
-    "fullName": "Nguyễn Huỳnh Hương",
-    "email": "huongquadeo@gmail.com",
-    "profile": "https://res.cloudinary.com/djuwysj2y/image/upload/v1699265075/onoodmvs44ociyrnrzyq.jpg"
-  }
+  "user": [
+    {
+      "id": "1",
+      "username": "huongquadeo",
+      "password":"123456",
+      "fullName": "Nguyễn Huỳnh Hương",
+      "email": "huongquadeo@gmail.com",
+      "profile": "https://res.cloudinary.com/djuwysj2y/image/upload/v1699265075/onoodmvs44ociyrnrzyq.jpg"
+    },{
+      "id": "2",
+      "username": "phuc",
+      "password":"123456",
+      "fullName": "Võ Hồng Phúc",
+      "email": "vohongphuc57371@gmail.com",
+      "profile": "https://res.cloudinary.com/djuwysj2y/image/upload/v1699607047/vrjlver1mxv1oavisi1q.jpg"
+    }
+  ]
 }

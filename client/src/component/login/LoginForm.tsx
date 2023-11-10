@@ -5,26 +5,57 @@ import { TextInput } from "react-native-paper";
 import { Pressable } from "react-native";
 import React from "react";
 import { useEffect, useState } from 'react';
-export const LoginForm = ({navigation}:{navigation:any}) => {
+import axios from 'axios';
+
+export const LoginForm = ({ navigation }: { navigation: any }) => {
   var [username, setUsername] = useState('');
   var [password, setPassword] = useState('');
+  var [listUser, setListUser] = useState([]);
 
-  const handleSignupForm = ()=>{
+
+  function handleUsernameChange(event: any) {
+    setUsername(event.target.value);
+  }
+  function handlePasswordChange(event: any) {
+    setPassword(event.target.value);
+  }
+  useEffect(() => {
+    axios.get('http://localhost:3001/user')
+      .then(response => {
+        setListUser(response.data)
+        console.log(response.data)
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  }, []);
+
+
+
+  const handleSignupForm = () => {
     navigation.navigate('signup')
   }
-  const handleHome = ()=>{
-    navigation.navigate('Tabs')
+  const handleHome = () => {
+    console.log(username, password, listUser)
+    for (let i = 0; i < listUser.length; i++) {
+      if (listUser[i].username === username && listUser[i].password === password) {
+        navigation.navigate('Tabs', { screen: 'Feed',params:{userid: listUser[i]} })
+        console.log(username, password, listUser[i].id)
+        break;
+      }
+    }
+    //    navigation.navigate('Tabs')
   }
   return (
     <View style={style.container}>
       <View style={style.loginContainer}>
-        <View style={{alignSelf:'flex-start'}}>
+        <View style={{ alignSelf: 'flex-start' }}>
           <Image
             source={require("../../../assets/twitter.png")}
             style={style.logoLogin}
           />
         </View>
-        <View style={{ flex:0.3,alignItems:'center', justifyContent:'center'}}>
+        <View style={{ flex: 0.3, alignItems: 'center', justifyContent: 'center' }}>
           <h2 style={{ textTransform: "uppercase" }}>login</h2>
         </View>
         <View>
@@ -34,6 +65,7 @@ export const LoginForm = ({navigation}:{navigation:any}) => {
               style={style.textInput}
               underlineColor="transparent"
               theme={{ colors: { primary: "transparent" } }}
+              onChange={handleUsernameChange}
             />
           </View>
           <View style={style.conatinerInput}>
@@ -42,14 +74,15 @@ export const LoginForm = ({navigation}:{navigation:any}) => {
               style={style.textInput}
               underlineColor="transparent"
               theme={{ colors: { primary: "transparent" } }}
-              
+              onChange={handlePasswordChange}
+
             />
           </View>
         </View>
         <View>
           <View style={style.conatinerInput}>
             <Pressable style={style.buttonLogin} onPress={handleHome}>
-              <TextInput style={style.text}>login</TextInput>
+              <Text style={style.text}>login</Text>
             </Pressable>
           </View>
           <View>

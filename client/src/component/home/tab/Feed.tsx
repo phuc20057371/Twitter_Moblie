@@ -45,15 +45,10 @@ function Feed({ navigation }: { navigation: any }) {
             });
     }, [route.params?.data]);
     useEffect(() => {   
-        axios.get('http://localhost:3001/user')
-            .then(response => {
-                
-                setUser(response.data)
-            })
-            .catch(error => {
-                console.error(error);
-            });
-    }, [])
+        if(route.params?.userid){
+            setUser(route.params?.userid)
+        }
+    }, [route.params?.userid])
     function checkLike(item: any) {
         for (var i = 0; i < item.length; i++) {
             if (item[i].username == u.username) {
