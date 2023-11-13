@@ -7,8 +7,8 @@ import { Feather } from '@expo/vector-icons';
 import Feed from './tab/Feed';
 import Bookmark from './tab/Bookmark';
 import Notifications from './tab/Notifications';
-import Profile from './tab/Profile';
 import Search from './tab/Search';
+import { Profile } from '../profile/Profile';
 
 const Tab = createMaterialBottomTabNavigator();
 

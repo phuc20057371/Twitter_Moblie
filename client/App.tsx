@@ -6,6 +6,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import { EditProfile } from "./src/component/edit/EditProfile";
 import  MyTabs   from "./src/component/home/Home"
 import AppHeader from "./src/component/home/AppHeader";
+import { Profile } from "./src/component/profile/Profile";
 
 export default function App() {
   const Stack = createStackNavigator();
@@ -43,6 +44,7 @@ export default function App() {
           <Stack.Screen name="Tabs" component={MyTabs}
             options={{ header: () => <AppHeader /> }} 
            />
+           <Stack.Screen name="profile" component={Profile} />
       </Stack.Navigator>
     </NavigationContainer>
   );
