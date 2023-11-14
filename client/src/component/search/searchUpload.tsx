@@ -21,7 +21,7 @@ const SearchUpload: React.FC<SearchUploadProps> = ({ navigation, user }) => {
   return (
     <View style={style.container}>
       <TouchableOpacity style={style.button20} onPress={navigateToProfile}>
-        <Image style={style.imageAvatar} source={{ uri: user.profile }} />
+        <Image style={style.imageAvatar} source={{ uri: user.imageAvatar }} />
       </TouchableOpacity>
 
       <View style={style.container}>

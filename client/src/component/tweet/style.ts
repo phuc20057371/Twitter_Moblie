@@ -6,12 +6,12 @@ export const style = StyleSheet.create({
     borderRadius: 30,
     padding: 5,
     margin: 5,
-    shadowColor: "grey",
-    shadowOffset: {
-      width: 3,
-      height: 3,
-    },
-    shadowRadius: 5,
+    // shadowColor: "grey",
+    // shadowOffset: {
+    //   width: 3,
+    //   height: 3,
+    // },
+    // shadowRadius: 5,
   },
   button1: {
     width: "20%",
@@ -30,6 +30,10 @@ export const style = StyleSheet.create({
   container3: {
     flexDirection: "row",
     gap: 5,
+  },
+  contentWithoutImage: {
+    height: "auto",
+    // Các style khác nếu cần
   },
   textName: {
     fontWeight: "bold",

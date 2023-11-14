@@ -1,11 +1,23 @@
-interface IUser {
-  id: string;
-  username: string;
-  password: string;
+interface IFollowing {
+  userName: string;
+}
+interface IFollowers {
+  userName: string;
+}
+interface IBookmarks {
+  tweetId: string;
+}
+interface IUser extends Document {
+  userName: string;
   fullName: string;
   email: string;
-  profile: string;
-  coverimage: string;
+  password: string;
+  dateJoined: Date;
+  cloudinaryId: String;
+  imageAvatar: string;
+  imageCover: string;
+  following: IFollowing[];
+  followers: IFollowers[];
+  bookmarks: IBookmarks[];
 }
-
-export default IUser;
+export default IUser

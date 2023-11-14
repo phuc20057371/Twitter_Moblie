@@ -5,6 +5,7 @@ export const style = StyleSheet.create({
     flex: 1,
     width: 400,
     height: 267,
+    backgroundColor:'white'
   },
   container1: {
     flex: 1,

@@ -1,12 +1,29 @@
-interface IData {
-  id: string;
-  name: String;
-  username: string;
-  description: string;
-  img: string;
-  like: [{ username: string; name: string; at: string }];
-  profile: string;
-  cmt: [{ username: string; name: string; content: string; at: string }];
+interface ILike {
+  userName: string;
+}
+interface IBookmark {
+  userName: string;
+}
+interface ILikecomment {
+  userName: string;
+}
+interface IComment {
+  content: string;
+  userName: string;
+  createdAt: Date;
+  updatedAt: Date | null;
+  likescomment: ILikecomment[];
+}
+interface IData extends Document {
+  content: string;
+  userName: string;
+  fullName: string;
+  dateTweet: Date;
+  image: string;
+  cloudinaryId: string;
+  likes: ILike[];
+  bookmarks: IBookmark[];
+  comments: IComment[]
 }
 
 export default IData;
