@@ -95,23 +95,36 @@
       "like": [],
       "profile": "https://res.cloudinary.com/djuwysj2y/image/upload/v1699265075/onoodmvs44ociyrnrzyq.jpg",
       "cmt": []
+    },
+    {
+      "id": "9194917556",
+      "name": "Nguyễn Huỳnh Hương",
+      "username": "huongquadeo",
+      "description": "123123123",
+      "img": "https://res.cloudinary.com/djuwysj2y/image/upload/v1699946202/beuwtkf2apkpambkynyi.jpg",
+      "like": [],
+      "profile": "https://res.cloudinary.com/djuwysj2y/image/upload/v1699265075/onoodmvs44ociyrnrzyq.jpg",
+      "cmt": []
     }
   ],
   "user": [
     {
       "id": "1",
       "username": "huongquadeo",
-      "password":"123456",
+      "password": "123456",
       "fullName": "Nguyễn Huỳnh Hương",
       "email": "huongquadeo@gmail.com",
-      "profile": "https://res.cloudinary.com/djuwysj2y/image/upload/v1699265075/onoodmvs44ociyrnrzyq.jpg"
-    },{
+      "profile": "https://res.cloudinary.com/djuwysj2y/image/upload/v1699265075/onoodmvs44ociyrnrzyq.jpg",
+      "coverimage":"https://res.cloudinary.com/djuwysj2y/image/upload/v1699265075/onoodmvs44ociyrnrzyq.jpg"
+    },
+    {
       "id": "2",
       "username": "phuc",
-      "password":"123456",
+      "password": "123456",
       "fullName": "Võ Hồng Phúc",
       "email": "vohongphuc57371@gmail.com",
-      "profile": "https://res.cloudinary.com/djuwysj2y/image/upload/v1699607047/vrjlver1mxv1oavisi1q.jpg"
+      "profile": "https://res.cloudinary.com/djuwysj2y/image/upload/v1699607047/vrjlver1mxv1oavisi1q.jpg",
+      "coverimage":"https://res.cloudinary.com/djuwysj2y/image/upload/v1699265075/onoodmvs44ociyrnrzyq.jpg"
     }
   ]
 }

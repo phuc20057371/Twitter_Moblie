@@ -4,14 +4,15 @@ import { style } from "./style";
 import { TextInput } from "react-native-paper";
 import { Pressable } from "react-native";
 import React from "react";
-import { useEffect, useState } from 'react';
-import axios from 'axios';
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { useDispatch } from "react-redux";
+import { userActions } from "../../redux/actions/userActions";
 
 export const LoginForm = ({ navigation }: { navigation: any }) => {
-  var [username, setUsername] = useState('');
-  var [password, setPassword] = useState('');
+  var [username, setUsername] = useState("");
+  var [password, setPassword] = useState("");
   var [listUser, setListUser] = useState([]);
-
 
   function handleUsernameChange(event: any) {
     setUsername(event.target.value);
@@ -20,42 +21,51 @@ export const LoginForm = ({ navigation }: { navigation: any }) => {
     setPassword(event.target.value);
   }
   useEffect(() => {
-    axios.get('http://localhost:3001/user')
-      .then(response => {
-        setListUser(response.data)
-        console.log(response.data)
+    axios
+      .get("http://localhost:3001/user")
+      .then((response) => {
+        setListUser(response.data);
+        console.log(response.data);
       })
-      .catch(error => {
+      .catch((error) => {
         console.error(error);
       });
   }, []);
 
-
-
   const handleSignupForm = () => {
-    navigation.navigate('signup')
-  }
+    navigation.navigate("signup");
+  };
+  const distpach = useDispatch();
   const handleHome = () => {
-    console.log(username, password, listUser)
+    console.log(username, password, listUser);
     for (let i = 0; i < listUser.length; i++) {
-      if (listUser[i].username === username && listUser[i].password === password) {
-        navigation.navigate('Tabs', { screen: 'Feed',params:{userid: listUser[i]} })
-        console.log(username, password, listUser[i].id)
+      if (
+        listUser[i].username === username &&
+        listUser[i].password === password
+      ) {
+        navigation.navigate("Tabs", {
+          screen: "Feed",
+          params: { userid: listUser[i] },
+        });
+        distpach(userActions.getProfileUser.fulfill(listUser[i].id));
+        console.log("asdasdsd ", username, password, listUser[i].id);
         break;
       }
     }
     //    navigation.navigate('Tabs')
-  }
+  };
   return (
     <View style={style.container}>
       <View style={style.loginContainer}>
-        <View style={{ alignSelf: 'flex-start' }}>
+        <View style={{ alignSelf: "flex-start" }}>
           <Image
             source={require("../../../assets/twitter.png")}
             style={style.logoLogin}
           />
         </View>
-        <View style={{ flex: 0.3, alignItems: 'center', justifyContent: 'center' }}>
+        <View
+          style={{ flex: 0.3, alignItems: "center", justifyContent: "center" }}
+        >
           <h2 style={{ textTransform: "uppercase" }}>login</h2>
         </View>
         <View>
@@ -75,7 +85,6 @@ export const LoginForm = ({ navigation }: { navigation: any }) => {
               underlineColor="transparent"
               theme={{ colors: { primary: "transparent" } }}
               onChange={handlePasswordChange}
-
             />
           </View>
         </View>
