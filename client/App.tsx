@@ -6,8 +6,12 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import { EditProfile } from "./src/component/edit/EditProfile";
 import MyTabs from "./src/component/home/Home"
 import AppHeader from "./src/component/home/AppHeader";
+import { Profile } from "./src/component/profile/Profile";
 import Tweet from "./src/component/home/tab/tweet/Tweet";
 import TweetDetail from "./src/component/home/tab/tweet/TweetDetail";
+import Tweet from "./src/component/home/tab/tweet/Tweet";
+import TweetDetail from "./src/component/home/tab/tweet/TweetDetail";
+import { Profile } from "./src/component/profile/Profile";
 export default function App() {
   const Stack = createStackNavigator();
 
@@ -32,7 +36,7 @@ export default function App() {
             ),
           }}
         />
-        <Stack.Screen name="editprofile" component={EditProfile} options={{
+                <Stack.Screen name="editprofile" component={EditProfile} options={{
           headerLeft: ({ onPress }) => (
             <Ionicons
               name="arrow-back-sharp"
@@ -48,6 +52,7 @@ export default function App() {
         />
         <Stack.Screen name="TweetDetail" component={TweetDetail}
         />
+         <Stack.Screen name="profile" component={Profile} />
       </Stack.Navigator>
     </NavigationContainer>
   );
