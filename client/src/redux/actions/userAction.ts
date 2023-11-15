@@ -11,5 +11,14 @@ export const userActions = {
       type: "GET_USER_ERROR",
       payload: error,
     }),
+    
+  },
+  updateUserProfile: {
+    pending: () => ({ type: 'UPDATE_USER_PROFILE_PENDING' }),
+    fulfill: (data: any) => ({
+      type: 'UPDATE_USER_PROFILE_FULFILL',
+      payload: data,
+    }),
+    errors: (error: string) => ({ type: 'UPDATE_USER_PROFILE_ERROR', payload: error }),
   },
 };

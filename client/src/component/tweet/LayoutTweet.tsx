@@ -1,6 +1,5 @@
 import { Image, Text, TouchableOpacity, View } from "react-native";
 import IData from "../../interface/IData";
-import IUser from "../../interface/IUser";
 import { TextInput } from "react-native-paper";
 import EvilIcons from "react-native-vector-icons/EvilIcons";
 import AntDesign from "react-native-vector-icons/AntDesign";
@@ -53,9 +52,10 @@ export const LayoutTweet: React.FC<LayoutTweetProps> = ({
 const {data:tweet} = useSelector((state:any)=>state.tweet)
   const findTweet = tweet && tweet.find((element:IData) => element._id === tweetId )
   const countLike = findTweet && findTweet.likes ? findTweet.likes.length :0
-   const listLike = tweet?.likes?.map((element: any) => element.userName) || [];
-   const isLike = listLike.includes(name);
-  console.log("true", isLike)
+  const countComment = findTweet && findTweet.comments ? findTweet.comments.length : 0
+  const countBookmarks = findTweet && findTweet.bookmarks ? findTweet.bookmarks. length : 0
+  const listLike = findTweet?.likes?.map(element => element.userName) || []
+  const isLike = listLike.includes(name)
   return (
     <View style={style.container}>
       <View>
@@ -84,23 +84,17 @@ const {data:tweet} = useSelector((state:any)=>state.tweet)
         </View>
         <View style={style.container4}>
           <TouchableOpacity style={style.button3} onPress={handleLike}>
-          {isLike ?(
-            <AntDesign  name={'hearto'} size={24}  color={'red'}/>
-            ):(
-              <AntDesign  name={'hearto'} size={24} />
-          )}
+          {isLike ? (<AntDesign name='hearto' size={24} color= 'red' />):(<AntDesign name='hearto' size={24} />)}
             <Text>{`${countLike}`}</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={style.button4}
-           
-          >
+            style={style.button4}          >
             <EvilIcons name="comment" size={30} color="black" />
-            <Text>{10}</Text>
+            <Text>{`${countComment}`}</Text>
           </TouchableOpacity>
           <TouchableOpacity style={style.button5}>
             <AntDesign name="staro" size={24} color="black" />
-            <Text>{10}</Text>
+            <Text>{`${countBookmarks}`}</Text>
           </TouchableOpacity>
         </View>
         <View style={style.container5}>
@@ -111,7 +105,7 @@ const {data:tweet} = useSelector((state:any)=>state.tweet)
             />
           </TouchableOpacity>
 
-          <View style={{}}>
+          <View>
             <TextInput
               style={style.textInputComment}
               underlineColor="transparent"

@@ -27,6 +27,21 @@ const initialState = {
           loading: false,
           error: action.payload,
         };
+        case 'UPDATE_USER_PROFILE_PENDING':
+          return { ...state, loading: true };
+        case 'UPDATE_USER_PROFILE_FULFILL':
+          return {
+            ...state,
+            loading: false,
+            data: action.payload,
+            error: null,
+          };
+        case 'UPDATE_USER_PROFILE_ERROR':
+          return {
+            ...state,
+            loading: false,
+            error: action.payload,
+          };
       default:
         return state;
     }

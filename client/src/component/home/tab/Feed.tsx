@@ -7,7 +7,7 @@ import { LayoutTweet } from "../../tweet/LayoutTweet";
 import { useDispatch, useSelector } from "react-redux";
 import { tweetAction } from "../../../redux/actions/tweetAction";
 import { customFetch } from "../../../utilities/customFetch";
-
+import { useFocusEffect } from '@react-navigation/native';
 const footer = () => {
   return (
     <View style={{ flex: 1, height: 500, backgroundColor: "yellow" }}>
@@ -23,16 +23,21 @@ function Feed({ navigation }: { navigation: any }) {
     const response = await customFetch({}, "/tweet");
     if (response?.data) {
       distpach(tweetAction.getTweet.fulfill(response.data))
+      console.log("data 1", response.data)
     }else {
       distpach(tweetAction.getTweet.errors(response?.error))
     }
   };
-  useEffect(()=>{
-    loadDataTweet()
-  },[])
+  
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      loadDataTweet();
+    });
+
+    return unsubscribe;
+  }, [navigation]);
   const {data:tweetList} = useSelector((state:any)=>state.tweet)
   const {data:user} = useSelector((state:any)=>state.user)
-  console.log("tweetList ", tweetList)
   return (
     <View style={{ flex: 1, backgroundColor: "white", width: "100%" }}>
       <FlatList

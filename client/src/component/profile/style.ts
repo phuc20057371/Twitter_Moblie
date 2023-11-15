@@ -43,4 +43,12 @@ export const style = StyleSheet.create({
     color: "white",
     textTransform: "uppercase",
   },
+  buttonSave: {
+    width: 90,
+    height: 27,
+    backgroundColor: "#3B82F6",
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 12,
+  },
 });

@@ -65,6 +65,26 @@ export const tweetRedudcer = (state = initialState, action: apiAction) => {
       };
       case "UPDATE_TWEET_ERROR":
         return { ...state, loading: false, error: action.payload };
+        case 'CREATE_TWEET_FULFILL':
+          const { _id, content, image, userName, fullName } = action.payload;
+          const dateTweet = formatTweetDate(new Date());
+          const newTweet = {
+            _id,
+            content,
+            image,
+            dateTweet,
+            userName,
+            fullName,
+          };
+          const createTweet = state.data ? [newTweet, ...state.data] : [newTweet];
+          return {
+            loading: false,
+            data: createTweet,
+            error: null,
+          };
+    
+        case 'CREATE_TWEET_ERROR':
+          return { ...state, loading: false, error: action.payload };
     default: return state
   }
 };

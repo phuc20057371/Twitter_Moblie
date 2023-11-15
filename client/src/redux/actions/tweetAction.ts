@@ -14,5 +14,14 @@ export const tweetAction = {
           payload: data,
         }),
         errors: (error: string) => ({ type: 'UPDATE_TWEET_ERROR', payload: error }),
-      }
+      },
+      createTweet: {
+        pending: () => ({ type: 'CREATE_TWEET_PENDING' }),
+        fulfill: (data: any) => ({
+          type: 'CREATE_TWEET_FULFILL',
+          payload: data,
+        }),
+        errors: (error: string) => ({ type: 'CREATE_TWEET_ERROR', payload: error }),
+        
+      },
     }

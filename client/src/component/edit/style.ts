@@ -21,7 +21,8 @@ export const style = StyleSheet.create({
     },
     container: {
         flex: 1,
-       alignItems:'center'
+       alignItems:'center',
+       justifyContent:'center'
       },
     text:{
         textTransform:'uppercase',
