@@ -6,13 +6,17 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
 import Feed from "./tab/Feed";
 import Bookmark from "./tab/Bookmark";
-import Notifications from "./tab/Notifications";
 import Search from "./tab/Search";
 import { Profile } from "../profile/Profile";
+import { Notifications } from "../notifications/Notifications";
+import { useSelector } from "react-redux";
 
 const Tab = createMaterialBottomTabNavigator();
 
 function MyTabs() {
+  const { data: notifications } = useSelector((state: any) => state.notifications);
+  const unreadNotifications = notifications && notifications.filter((notification: any) => !notification?.isRead);
+  const unreadCount = unreadNotifications ? unreadNotifications.length : 0;
   return (
     <Tab.Navigator
       initialRouteName="Feed"
@@ -20,13 +24,16 @@ function MyTabs() {
       //    labelStyle={{ fontSize: 12 }}
       style={{ backgroundColor: "tomato" }}
     >
-      <Tab.Screen
+     <Tab.Screen
         name="Notifications"
         component={Notifications}
         options={{
           tabBarLabel: "Updates",
           tabBarIcon: ({ color }) => (
-            <MaterialCommunityIcons name="bell" color={color} size={26} />
+            <View>
+              <MaterialCommunityIcons name="bell" color={color} size={26} />
+              {unreadCount > 0 && <Text style={{ color: "white", backgroundColor: "red", borderRadius: 10, paddingHorizontal: 6, position: "absolute", top: 0, right: 0 }}>{unreadCount}</Text>}
+            </View>
           ),
         }}
       />

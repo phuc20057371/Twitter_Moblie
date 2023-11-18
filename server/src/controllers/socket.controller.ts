@@ -22,7 +22,7 @@ export const configureSocket = (httpServer: any) => {
       console.log('username: ', name);
       const notification = await createNotification(userName, {
         type: NotificationType.Follow,
-        message: `${name} started following you.`,
+        message: `vừa theo dõi bạn.`,
         fromUserName: name,
       });
       console.log('create noti', notification);
@@ -33,7 +33,7 @@ export const configureSocket = (httpServer: any) => {
       console.log(`Received follow event from ${name} in room ${room}`);
       const notification = await createNotification(userName, {
         type: NotificationType.Like,
-        message: `${name} liked your tweet`,
+        message: `vừa thích bài viết của bạn`,
         fromUserName: name,
         tweetId: tweetId,
       });
@@ -45,7 +45,7 @@ export const configureSocket = (httpServer: any) => {
       console.log('tweetID', tweetId);
       const notification = await createNotification(userName, {
         type: NotificationType.Comment,
-        message: `${name} commented on your tweet`,
+        message: `vừa comment bài viết của bạn`,
         fromUserName: name,
         tweetId: tweetId,
       });

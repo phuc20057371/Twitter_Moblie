@@ -46,12 +46,12 @@ export const tweetRedudcer = (state = initialState, action: apiAction) => {
     case "UPDATE_TWEET_PENDING":
       return { ...state, loading: true, error: null };
     case "UPDATE_TWEET_FULFILL":
-      const updatedLikes = action.payload.likes;
+      const updatedLikes = action.payload;
       const updatedTweets = (state.data||[]).map((tweet:IData) => {
         if (tweet._id === action.payload._id) {
           return {
             ...tweet,
-            likes: updatedLikes,
+            ... updatedLikes,
           };
         }
         return tweet;

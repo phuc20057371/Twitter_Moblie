@@ -8,6 +8,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { tweetAction } from "../../../redux/actions/tweetAction";
 import { customFetch } from "../../../utilities/customFetch";
 import { useFocusEffect } from '@react-navigation/native';
+import { userActions } from "../../../redux/actions/userAction";
+import { io } from "socket.io-client";
+import { notificationsAction } from "../../../redux/actions/notificationsAction";
 const footer = () => {
   return (
     <View style={{ flex: 1, height: 500, backgroundColor: "yellow" }}>
@@ -17,6 +20,10 @@ const footer = () => {
 };
 
 function Feed({ navigation }: { navigation: any }) {
+  const socket = io('http://localhost:8080', {
+    autoConnect: false,
+  });
+  const token = localStorage.getItem('token');
   const distpach = useDispatch();
   const loadDataTweet = async () => {
     distpach(tweetAction.getTweet.pending());
@@ -28,6 +35,15 @@ function Feed({ navigation }: { navigation: any }) {
       distpach(tweetAction.getTweet.errors(response?.error))
     }
   };
+  const loadDataUser = async ()=>{
+    distpach(userActions.getProfileUser.pending())
+    const response = await customFetch({},'/profile')
+    if(response?.data){
+      distpach(userActions.getProfileUser.fulfill(response.data))
+    }else{
+      distpach(userActions.getProfileUser.error(response?.error))
+    }
+  }
   
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
@@ -36,8 +52,47 @@ function Feed({ navigation }: { navigation: any }) {
 
     return unsubscribe;
   }, [navigation]);
-  const {data:tweetList} = useSelector((state:any)=>state.tweet)
+  const loadNotifications = async () => {
+    distpach(notificationsAction.getNotification.pending());
+    const response = await customFetch({}, "/notification");
+    if (response?.data) {
+      console.log("notifi ", response.data.notifications);
+      distpach(
+        notificationsAction.getNotification.fulfill(response.data.notifications)
+      );
+    } else
+    distpach(notificationsAction.getNotification.errors(response?.error));
+  };
+  useEffect(()=>{
+    if(!token) return
+    loadDataUser()
+    loadNotifications()
+  },[])
   const {data:user} = useSelector((state:any)=>state.user)
+  const name = user && user?.userName
+  useEffect(() => {
+    socket.connect();
+    socket.emit('joinRoom', { room: name });
+    socket.on('follow', (data) => {
+      distpach(notificationsAction.createNotification.fulfill(data.notification.notifications));
+    });
+    socket.on('like', (data) => {
+      console.log("noti ", data.notification)
+      distpach(notificationsAction.getNotification.fulfill(data.notification.notifications));
+      distpach(tweetAction.updateTweet.fulfill(data.data))
+      console.log("data data ",data.data)
+    });
+  
+    return () => {
+      socket.disconnect();
+    };
+  }, [socket, name]);
+  
+  const {data:tweetList} = useSelector((state:any)=>state.tweet)
+  console.log("user naem authoe ", name)
+  const { data: notifications } = useSelector((state: any) => state.notifications);
+  const unreadNotifications = notifications&& notifications.filter((notification: any) => !notification.isRead);
+  console.log("só noti chưa read ", unreadNotifications?.length)
   return (
     <View style={{ flex: 1, backgroundColor: "white", width: "100%" }}>
       <FlatList

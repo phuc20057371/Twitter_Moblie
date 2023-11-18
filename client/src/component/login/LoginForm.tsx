@@ -63,7 +63,6 @@ export const LoginForm = ({ navigation }: { navigation: any }) => {
   //   //    navigation.navigate('Tabs')
   // };
   const handleLogin = async()=>{
-    console.log("data form ", formData)
     distpach(loginActions.getLogin.pending())
     const response = await customFetch({method:'POST', data:formData},'/login')
     if(response?.data){
@@ -76,15 +75,7 @@ export const LoginForm = ({ navigation }: { navigation: any }) => {
       distpach(loginActions.getLogin.error(response?.error))
     }
   }
-  const loadDataUser = async ()=>{
-    distpach(userActions.getProfileUser.pending())
-    const response = await customFetch({},'/profile')
-    if(response?.data){
-      distpach(userActions.getProfileUser.fulfill(response.data))
-    }else{
-      distpach(userActions.getProfileUser.error(response?.error))
-    }
-  }
+  
   const loadDataImage = async()=>{
     distpach(imageActions.getImage.pending())
     const response = await customFetch({}, '/profile/imageAvatar');
@@ -92,7 +83,7 @@ export const LoginForm = ({ navigation }: { navigation: any }) => {
     else distpach(imageActions.getImage.errors(response?.error))
   }
   useEffect(()=>{
-    loadDataUser()
+    
     loadDataImage()
   },[])
   return (

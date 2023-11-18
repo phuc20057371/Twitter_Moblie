@@ -224,7 +224,7 @@ export const updateFollow: RequestHandler = async (req, res) => {
     }
 
     await Promise.all([userFind.save(), newUser.save()]);
-    res.status(200).json({ following: userFind.following });
+    res.status(200).json(userFind);
   } catch (error) {
     console.log('error: ', error);
     res.status(500).json({ message: 'Internal server error' });

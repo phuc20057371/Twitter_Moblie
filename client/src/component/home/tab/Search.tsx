@@ -1,5 +1,5 @@
 import * as React from "react";
-import { View, FlatList } from "react-native";
+import { View, FlatList,Pressable } from "react-native";
 import { TextInput } from "react-native-paper";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import { useDispatch, useSelector } from "react-redux";
@@ -7,30 +7,37 @@ import { userSearchActions } from "../../../redux/actions/userSearchActions";
 import { customFetch } from "../../../utilities/customFetch";
 import { ListUser } from "../../list/ListUser";
 
-function Search() {
-  const [searchValue, setSearchValue] = React.useState("");
+function Search({navigation}:{navigation:any}) {
   const distpach = useDispatch();
-  const users = useSelector((state:any)=>state.users)
+  const users = useSelector((state: any) => state.users);
   const handleInputChange = async (text: string) => {
-    setSearchValue(text);
-    if (searchValue) {
-      handleSearch({ query: searchValue });
+    if (text) {
+      handleSearch({ query: text });
     } else {
       distpach(userSearchActions.userSearch.fulfill([]));
     }
   };
-  const handleSearch = async (searchValue: { query: string }) => {
+  const handleSearch = async (query: { query: string }) => {
     distpach(userSearchActions.userSearch.pending());
     const response = await customFetch(
-      { method: "POST", data: searchValue },
+      { method: "POST", data: query },
       "/search"
     );
     if (response?.data)
       distpach(userSearchActions.userSearch.fulfill(response.data));
     else distpach(userSearchActions.userSearch.errors(response?.error));
   };
-  const imageAvatarAuthor = useSelector((state:any)=>state.imageAuthor)
-  console.log("dataa usser search ", users.data)
+  const imageAvatarAuthor = useSelector((state: any) => state.imageAuthor);
+  console.log("dataa usser search ", users.data);
+  const handleUser = async(userName:String)=>{
+    console.log("Clicked on user:", userName);
+    distpach(userSearchActions.userSearch.pending())
+    const response = await customFetch({}, `/profile/user/${userName}`);
+    if(response?.data){
+      distpach(userSearchActions.userSearch.fulfill(response.data))
+    }else distpach(userSearchActions.userSearch.errors(response?.error))
+    navigation.navigate(`user`,{userName})
+  }
   return (
     <View style={{ flex: 1, alignItems: "center", marginTop: 10 }}>
       <View
@@ -60,14 +67,25 @@ function Search() {
           onChangeText={handleInputChange}
         />
       </View>
-      <FlatList data={users.data}
-      renderItem={({item})=>(
-        <ListUser fullName={item.fullName} userName={item.userName} key={item.userName}
-        imageUrl={ Array.isArray(imageAvatarAuthor?.data)
-          ? imageAvatarAuthor.data.find((user: any) => user.userName === item.userName)?.imageAvatar
-          : null}
-        />
-      )}/>
+      <FlatList
+        data={users.data}
+        renderItem={({ item }) => (
+          <Pressable onPress={()=>handleUser(item.userName)}>
+            <ListUser
+              fullName={item.fullName}
+              userName={item.userName}
+              key={item.userName}
+              imageUrl={
+                Array.isArray(imageAvatarAuthor?.data)
+                  ? imageAvatarAuthor.data.find(
+                      (user: any) => user.userName === item.userName
+                    )?.imageAvatar
+                  : null
+              }
+            />
+          </Pressable>
+        )}
+      />
     </View>
   );
 }
