@@ -13,6 +13,7 @@ import { store } from "./src/redux/store";
 import { ProfileUser } from "./src/component/profile/ProfileUser";
 import { io } from "socket.io-client";
 import Tweet from "./src/component/home/tab/tweet/Tweet";
+
 export default function App() {
   const Stack = createStackNavigator();
   useEffect(() => {
@@ -28,10 +29,11 @@ export default function App() {
     });
     socket.connect();
   }, []);
+
   return (
     <Provider store={store}>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName="search">
+        <Stack.Navigator initialRouteName="login">
           <Stack.Screen
             name="login"
             component={LoginForm}

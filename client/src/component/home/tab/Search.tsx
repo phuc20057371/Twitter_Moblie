@@ -1,5 +1,5 @@
 import * as React from "react";
-import { View, FlatList,Pressable } from "react-native";
+import { View, FlatList, Pressable } from "react-native";
 import { TextInput } from "react-native-paper";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import { useDispatch, useSelector } from "react-redux";
@@ -7,7 +7,7 @@ import { userSearchActions } from "../../../redux/actions/userSearchActions";
 import { customFetch } from "../../../utilities/customFetch";
 import { ListUser } from "../../list/ListUser";
 
-function Search({navigation}:{navigation:any}) {
+function Search({ navigation }: { navigation: any }) {
   const distpach = useDispatch();
   const users = useSelector((state: any) => state.users);
   const handleInputChange = async (text: string) => {
@@ -29,15 +29,17 @@ function Search({navigation}:{navigation:any}) {
   };
   const imageAvatarAuthor = useSelector((state: any) => state.imageAuthor);
   console.log("dataa usser search ", users.data);
-  const handleUser = async(userName:String)=>{
-    console.log("Clicked on user:", userName);
-    distpach(userSearchActions.userSearch.pending())
+  const handleUser = async (userName: string) => {
+    distpach(userSearchActions.userSearch.pending());
     const response = await customFetch({}, `/profile/user/${userName}`);
-    if(response?.data){
-      distpach(userSearchActions.userSearch.fulfill(response.data))
-    }else distpach(userSearchActions.userSearch.errors(response?.error))
-    navigation.navigate(`user`,{userName})
-  }
+    if (response?.data) {
+      distpach(userSearchActions.userSearch.fulfill(response.data));
+      navigation.navigate('user', { userName: userName }); // Sửa đổi ở đây
+      console.log("userName router ", userName)
+    } else {
+      distpach(userSearchActions.userSearch.errors(response?.error));
+    }
+  };
   return (
     <View style={{ flex: 1, alignItems: "center", marginTop: 10 }}>
       <View
@@ -70,7 +72,7 @@ function Search({navigation}:{navigation:any}) {
       <FlatList
         data={users.data}
         renderItem={({ item }) => (
-          <Pressable onPress={()=>handleUser(item.userName)}>
+          <Pressable onPress={() => handleUser(item.userName)}>
             <ListUser
               fullName={item.fullName}
               userName={item.userName}

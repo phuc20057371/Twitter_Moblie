@@ -29,15 +29,20 @@ export const configureSocket = (httpServer: any) => {
       io.to(room).emit('follow', { userName, room, name, notification });
     });
 
-    socket.on('like', async ({ room, userName, name, tweetId, data }) => {
+    socket.on('like', async ({ room, userName, name, tweetId, data, flag }) => {
       console.log(`Received follow event from ${name} in room ${room}`);
-      const notification = await createNotification(userName, {
-        type: NotificationType.Like,
-        message: `vừa thích bài viết của bạn`,
-        fromUserName: name,
-        tweetId: tweetId,
-      });
-      io.to(room).emit('like', { userName, room, name, notification, tweetId, data });
+      console.log("flag ",flag)
+      if (flag){
+        const notification = await createNotification(userName, {
+          type: NotificationType.Like,
+          message: `vừa thích bài viết của bạn`,
+          fromUserName: name,
+          tweetId: tweetId,
+        });
+        io.to(room).emit('like', { userName, room, name, notification, tweetId, data,flag });
+      }else {
+        io.to(room).emit('like', { userName, room, name, tweetId, data,flag });
+      }
     });
 
     socket.on('comment', async ({ room, userName, name, tweetId, data }) => {

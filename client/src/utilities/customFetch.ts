@@ -1,9 +1,10 @@
-import axios, { AxiosRequestConfig } from 'axios';
+import axios, { AxiosRequestConfig, AxiosError } from 'axios'; // Import axios and AxiosError
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const customFetch = async ({ method = 'GET', data = {}, headers }: AxiosRequestConfig, path?: string) => {
   const baseURL = 'http://localhost:8080';
   const url = baseURL + path;
-  const token = localStorage.getItem('token');
+  const token = await AsyncStorage.getItem('token');
 
   try {
     const { data: response, status } = await axios({
@@ -21,7 +22,7 @@ export const customFetch = async ({ method = 'GET', data = {}, headers }: AxiosR
       return { data: response };
     } 
   } catch (error: any) {
-    console.log('Exception:', error);
-    return { error: error.message };
+     console.log('Exception:', error);
+      return { error: error.message, fullError: error };
   }
 };

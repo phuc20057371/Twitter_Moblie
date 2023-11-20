@@ -1,7 +1,6 @@
 import { RequestHandler } from 'express';
 import express from 'express';
 import bcrypt from 'bcryptjs';
-import { formatMonthYear } from '../helper/formatdate.helper';
 import cloudinary from '../util/cloudinary';
 import {  Tweet, User } from '../model';
 
@@ -84,15 +83,8 @@ export const getUserProfile: RequestHandler = async (req: express.Request, res: 
       res.status(404).json({ message: 'User not found' });
       return;
     }
-    let formattedDateJoined = '';
-    if (userProfile?.dateJoined) {
-      formattedDateJoined = formatMonthYear(userProfile.dateJoined.toISOString());
-    }
-    const userProfileWithFormattedDateJoined = {
-      ...userProfile.toObject(),
-      dateJoined: formattedDateJoined,
-    };
-    res.status(200).json(userProfileWithFormattedDateJoined);
+   
+    res.status(200).json(userProfile);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Internal server error' });

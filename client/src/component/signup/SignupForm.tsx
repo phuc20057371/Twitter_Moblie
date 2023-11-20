@@ -1,11 +1,36 @@
-import { Image, Pressable } from "react-native";
+import { Image, Pressable, ToastAndroid } from "react-native";
 import { Text, View } from "react-native";
 import { style } from "./style";
 import { TextInput } from "react-native-paper";
+import { useState } from "react";
+import { customFetch } from "../../utilities/customFetch";
+import {  MessageError } from "../messgae/Message";
 
 export const SignupForm = ({navigation}:{navigation:any}) => {
-    const handleSignup = ()=>{
+  const [formData, setFormData] = useState({
+    userName:"",
+    fullName:"",
+    password:"",
+    email:""
+  })
+  const handleInputChange = (key: string, value: string) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      [key]: value,
+    }));
+  };
+    const handleSignup = async()=>{
+      if(formData.email.trim()==="" || formData.fullName.trim()===""||formData.password.trim()==="" ||formData.userName.trim()==="") {
+        console.log("không được để trống")
+        MessageError("Vui lòng thử lại")
+        return
+      }
+      const response = await customFetch({method:'POST', data:formData},`/register`)
+      if(response?.data){
         navigation.navigate('login')
+      }else {
+        console.log("sai")
+      }
     }
   return (
     <View style={style.container}>
@@ -19,7 +44,7 @@ export const SignupForm = ({navigation}:{navigation:any}) => {
         <View
           style={{ flex: 0.3, alignItems: "center", justifyContent: "center" }}
         >
-          <h2 style={{ textTransform: "uppercase" }}>signup</h2>
+          <Text style={{ textTransform: "uppercase" }}>signup</Text>
         </View>
         <View>
           <View style={style.conatinerInput}>
@@ -28,6 +53,7 @@ export const SignupForm = ({navigation}:{navigation:any}) => {
               style={style.textInput}
               underlineColor="transparent"
               theme={{ colors: { primary: "transparent" } }}
+              onChangeText={(text)=>handleInputChange("userName",text)}
             />
           </View>
           <View style={style.conatinerInput}>
@@ -36,6 +62,7 @@ export const SignupForm = ({navigation}:{navigation:any}) => {
               style={style.textInput}
               underlineColor="transparent"
               theme={{ colors: { primary: "transparent" } }}
+              onChangeText={(text)=>handleInputChange("fullName",text)}
             />
           </View>
           <View style={style.conatinerInput}>
@@ -44,6 +71,7 @@ export const SignupForm = ({navigation}:{navigation:any}) => {
               style={style.textInput}
               underlineColor="transparent"
               theme={{ colors: { primary: "transparent" } }}
+              onChangeText={(text)=>handleInputChange("password",text)}
             />
           </View>
           <View style={style.conatinerInput}>
@@ -52,6 +80,7 @@ export const SignupForm = ({navigation}:{navigation:any}) => {
               style={style.textInput}
               underlineColor="transparent"
               theme={{ colors: { primary: "transparent" } }}
+              onChangeText={(text)=>handleInputChange("email",text)}
             />
           </View>
         </View>

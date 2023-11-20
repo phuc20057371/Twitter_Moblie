@@ -10,6 +10,14 @@ type apiAction = {
   type: string;
   payload: any;
 };
+const sortComments = (tweets) => {
+  return tweets.map((tweet) => ({
+    ...tweet,
+    comments: tweet.comments?.sort((a, b) =>
+      new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    ),
+  }));
+};
 
 function formatTweetDate(dateTweet: any) {
   const options: Intl.DateTimeFormatOptions = {
@@ -35,34 +43,37 @@ export const tweetRedudcer = (state = initialState, action: apiAction) => {
           dateTweet: format,
         };
       });
+      const sortedTweetsForGet = sortComments(tweets);
       return {
         ...state,
         loading: false,
-        data: tweets,
+        data: sortedTweetsForGet,
         error: null,
       };
     case "GET_TWEET_ERROR":
       return { ...state, loading: false, error: action.payload };
     case "UPDATE_TWEET_PENDING":
       return { ...state, loading: true, error: null };
-    case "UPDATE_TWEET_FULFILL":
-      const updatedLikes = action.payload;
-      const updatedTweets = (state.data||[]).map((tweet:IData) => {
-        if (tweet._id === action.payload._id) {
-          return {
-            ...tweet,
-            ... updatedLikes,
-          };
-        }
-        return tweet;
-      });
-    
-      return {
-        ...state,
-        loading: false,
-        data: updatedTweets,
-        error: null,
-      };
+      case "UPDATE_TWEET_FULFILL":
+        const tweetUpdate = action.payload;
+        const updatedTweets = (state.data || []).map((tweet: IData) => {
+          if (tweet._id === action.payload._id) {
+            const formattedDate = formatTweetDate(tweetUpdate.dateTweet);
+            return {
+              ...tweet,
+              ...tweetUpdate,
+              dateTweet: formattedDate,
+            };
+          }
+          return tweet;
+        });
+        const sortCommentsUpdate = sortComments(updatedTweets);
+        return {
+          ...state,
+          loading: false,
+          data: sortCommentsUpdate,
+          error: null,
+        };
       case "UPDATE_TWEET_ERROR":
         return { ...state, loading: false, error: action.payload };
         case 'CREATE_TWEET_FULFILL':

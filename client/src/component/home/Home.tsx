@@ -1,6 +1,5 @@
 import * as React from "react";
 import { Text, View } from "react-native";
-import { NavigationContainer } from "@react-navigation/native";
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
@@ -9,14 +8,86 @@ import Bookmark from "./tab/Bookmark";
 import Search from "./tab/Search";
 import { Profile } from "../profile/Profile";
 import { Notifications } from "../notifications/Notifications";
-import { useSelector } from "react-redux";
-
+import { useDispatch, useSelector } from "react-redux";
+import { io } from "socket.io-client";
+import { customFetch } from "../../utilities/customFetch";
+import { notificationsAction } from "../../redux/actions/notificationsAction";
+import { tweetAction } from "../../redux/actions/tweetAction";
+import { userActions } from "../../redux/actions/userAction";
+import { bookmarkAction } from "../../redux/actions/bookmarkAction";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 const Tab = createMaterialBottomTabNavigator();
 
 function MyTabs() {
+  const distpach = useDispatch();
   const { data: notifications } = useSelector((state: any) => state.notifications);
   const unreadNotifications = notifications && notifications.filter((notification: any) => !notification?.isRead);
   const unreadCount = unreadNotifications ? unreadNotifications.length : 0;
+  const socket = io('http://localhost:8080', {
+    autoConnect: false,
+  });
+  const {data:user} = useSelector((state:any)=>state.user)
+  const name = user && user?.userName
+  const loadNotifications = async () => {
+    distpach(notificationsAction.getNotification.pending());
+    const response = await customFetch({}, "/notification");
+    if (response?.data) {
+      distpach(
+        notificationsAction.getNotification.fulfill(response.data.notifications)
+      );
+    } else
+    distpach(notificationsAction.getNotification.errors(response?.error));
+  };
+  const loadBookmark = async ()=>{
+    distpach(bookmarkAction.getBookmarkByUserName.pending())
+    const response = await customFetch({},`/bookmark`)
+    if(response?.data) {
+      console.log("object bookmarks ", response.data)
+      distpach(bookmarkAction.getBookmarkByUserName.fulfill(response.data))
+    }
+    else distpach(bookmarkAction.getBookmarkByUserName.errors(response?.error))
+  }
+  const loadDataUser = async ()=>{
+    distpach(userActions.getProfileUser.pending())
+    const response = await customFetch({},'/profile')
+    if(response?.data){
+      distpach(userActions.getProfileUser.fulfill(response.data))
+    }else{
+      distpach(userActions.getProfileUser.error(response?.error))
+    }
+  }
+  React.useEffect(()=>{
+    loadDataUser()
+    loadNotifications()
+    loadBookmark()
+  },[])
+  React.useEffect(() => {
+    socket.connect();
+    socket.emit('joinRoom', { room: name });
+    socket.on('follow', (data) => {
+      distpach(notificationsAction.createNotification.fulfill(data.notification.notifications));
+    });
+    socket.on('like', (data) => {
+      if(data.flag){
+        console.log("falg ", data.flag)
+        console.log("noti ", data.notification)
+        distpach(notificationsAction.getNotification.fulfill(data.notification.notifications));
+        distpach(tweetAction.updateTweet.fulfill(data.data))
+        console.log("data data ",data.data)
+      }else {
+        console.log("falg ", data.flag)
+        distpach(tweetAction.updateTweet.fulfill(data.data))
+      }
+    });
+    socket.on('comment', (data) => {
+      distpach(notificationsAction.getNotification.fulfill(data.notification.notifications));
+      distpach(tweetAction.updateTweet.fulfill(data.data))
+      console.log("data ",data.data)
+    });
+    return () => {
+      socket.disconnect();
+    };
+  }, [socket, name]);
   return (
     <Tab.Navigator
       initialRouteName="Feed"

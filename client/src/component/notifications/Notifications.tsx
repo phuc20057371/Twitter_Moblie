@@ -32,7 +32,7 @@ export const Notifications = () => {
       <FlatList
         data={notifications}
         renderItem={({ item }) => (
-          <Pressable style={{backgroundColor:item.isRead ? 'white' :'#3B82F6'}} onPress={()=>handleUpdateNotifications(item._id)}>
+          <Pressable style={{backgroundColor:item.isRead ? 'white' :'#33CCFF'}} onPress={()=>handleUpdateNotifications(item._id)}>
             <ListNotifications
               userName={item.fromUserName}
               message={item.message}

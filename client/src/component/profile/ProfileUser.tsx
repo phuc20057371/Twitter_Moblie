@@ -26,6 +26,7 @@ export const ProfileUser = ({
   const user = users.data[0];
   console.log("userName ", user);
   const { userName } = route.params;
+  console.log("object userName",userName)
   const fullNameUser = user?.fullName || "full name";
   const date = user?.dateJoined || "date joined";
   const followings = user?.following ? user.following.length : 0;
@@ -35,17 +36,17 @@ export const ProfileUser = ({
   const name = user?.userName || "user name";
   const userFollowing = author.data ? author.data?.following : [];
   const dispatch = useDispatch();
-  const loadTweetUser = async () => {
-    if (name === undefined) return;
-    dispatch(tweetAction.getTweet.pending());
-    const response = await customFetch({}, `/profile/tweet/${userName}`);
-    if (response?.data) {
-      dispatch(tweetAction.getTweet.fulfill(response.data));
-      console.log("dataa twweet ", response?.data);
-    } else dispatch(tweetAction.getTweet.errors(response?.error));
-  };
-
   useEffect(() => {
+    const loadTweetUser = async () => {
+      if (name === undefined) return;
+      dispatch(tweetAction.getTweet.pending());
+      const response = await customFetch({}, `/profile/tweet/${userName}`);
+      if (response?.data) {
+        dispatch(tweetAction.getTweet.fulfill(response.data));
+        console.log("dataa twweet ", response?.data);
+      } else dispatch(tweetAction.getTweet.errors(response?.error));
+    };
+
     loadTweetUser();
     navigation.setOptions({
       title: userName,
@@ -109,7 +110,7 @@ export const ProfileUser = ({
                 </View>
               </View>
               <View style={style.container5}>
-                {name === userName ? (
+                {userName === author.data && author.data.userName ? (
                   navigation.navigate('profile')
                 ) : (
                   <Pressable

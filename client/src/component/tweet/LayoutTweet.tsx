@@ -1,4 +1,11 @@
-import { Image, Text, TouchableOpacity, View, Pressable } from "react-native";
+import {
+  Image,
+  Text,
+  TouchableOpacity,
+  View,
+  Pressable,
+  FlatList,
+} from "react-native";
 import IData from "../../interface/IData";
 import { TextInput } from "react-native-paper";
 import EvilIcons from "react-native-vector-icons/EvilIcons";
@@ -9,6 +16,15 @@ import { tweetAction } from "../../redux/actions/tweetAction";
 import { customFetch } from "../../utilities/customFetch";
 import { bookmarkAction } from "../../redux/actions/bookmarkAction";
 import { io } from "socket.io-client";
+import Feather from "react-native-vector-icons/Feather";
+import { useState } from "react";
+import { ListComment } from "../list/ListComment";
+interface IComment {
+  userName: string;
+  content: string;
+  createAt: Date;
+  _id: string;
+}
 interface LayoutTweetProps {
   navigation?: any;
   tweetId: string;
@@ -19,7 +35,7 @@ interface LayoutTweetProps {
   imageUrl: string;
   likes: string[];
   selected: boolean;
-  comments: string[];
+  comments: IComment[];
 }
 
 export const LayoutTweet: React.FC<LayoutTweetProps> = ({
@@ -38,6 +54,7 @@ export const LayoutTweet: React.FC<LayoutTweetProps> = ({
     navigation.navigate("profile");
   };
   const distpach = useDispatch();
+  const [contentComment, setContentComment] = useState("");
   console.log("object", fullName);
   const { data: tweetList } = useSelector((state: any) => state.tweet);
   const imageAuthor = useSelector((state: any) => state.imageAuthor);
@@ -47,7 +64,7 @@ export const LayoutTweet: React.FC<LayoutTweetProps> = ({
     user.data?.userName === undefined ? "user name" : user.data?.userName;
   const avatarimage =
     user.data && user.data?.imageAvatar ? user.data.imageAvatar : "";
-    const socket = io('http://localhost:8080', {
+  const socket = io("http://localhost:8080", {
     autoConnect: false,
   });
   const handleLike = async () => {
@@ -56,31 +73,36 @@ export const LayoutTweet: React.FC<LayoutTweetProps> = ({
       { method: "PATCH" },
       `/tweet/like/${tweetId}`
     );
-    const data = response?.data
-    if (data){
+    const data = response?.data;
+    if (data) {
+      let flag = true;
       distpach(tweetAction.updateTweet.fulfill(data));
-      if (
-        userName === name ||
+      if (userName === name) {
+        return;
+      } else if (
         tweetList
           .find((element: any) => element._id === tweetId)
           ?.likes?.some((element: any) => element.userName === name)
       ) {
-        return;
+        flag = false;
+        if (socket && socket.connected) {
+          socket.emit("like", { room, userName, name, tweetId, data, flag });
+        } else {
+          socket.connect();
+          socket.once("connect", () => {
+            socket.emit("like", { room, userName, name, tweetId, data, flag });
+          });
+        }
       }
-
       if (socket && socket.connected) {
-        console.log('emit like', room);
-        socket.emit('like', { room, userName, name, tweetId, data });
+        socket.emit("like", { room, userName, name, tweetId, data, flag });
       } else {
-        console.log('socket is connected. Connecting....');
         socket.connect();
-        socket.once('connect', () => {
-          console.log('Socket connected. Emitting like event.');
-          socket.emit('like', { room, userName, name, tweetId, data });
-        })
+        socket.once("connect", () => {
+          socket.emit("like", { room, userName, name, tweetId, data, flag });
+        });
       }
-    }
-    else distpach(tweetAction.updateTweet.errors(response?.error));
+    } else distpach(tweetAction.updateTweet.errors(response?.error));
   };
   const { data: tweet } = useSelector((state: any) => state.tweet);
   const findTweet =
@@ -99,8 +121,8 @@ export const LayoutTweet: React.FC<LayoutTweetProps> = ({
       `/tweet/bookmark/${tweetId}`
     );
     if (response?.data) {
-      console.log("count bookmark ", response.data )
-      distpach(bookmarkAction.updateCountBookmark.fulfill(response.data))
+      console.log("count bookmark ", response.data);
+      distpach(bookmarkAction.updateCountBookmark.fulfill(response.data));
       distpach(tweetAction.updateTweet.fulfill(response.data));
     } else distpach(tweetAction.updateTweet.errors(response?.error));
   };
@@ -108,7 +130,29 @@ export const LayoutTweet: React.FC<LayoutTweetProps> = ({
     findTweet && findTweet.bookmarks
       ? findTweet.bookmarks.includes(name)
       : false;
-      
+  const handleComment = async () => {
+    distpach(tweetAction.updateTweet.pending());
+    const response = await customFetch(
+      { method: "PATCH", data: { content: contentComment } },
+      `/tweet/comments/${tweetId}`
+    );
+    const data = response?.data;
+    if (data) {
+      distpach(tweetAction.updateTweet.fulfill(data));
+      setContentComment("");
+      if (socket && socket.connected) {
+        socket.emit("comment", { room, userName, name, tweetId, data });
+      } else {
+        socket.connect();
+        socket.once("connect", () => {
+          socket.emit("comment", { room, userName, name, tweetId, data });
+        });
+      }
+    } else {
+      distpach(tweetAction.updateTweet.errors(response?.error));
+    }
+  };
+
   return (
     <View style={style.container}>
       <View>
@@ -135,6 +179,7 @@ export const LayoutTweet: React.FC<LayoutTweetProps> = ({
           </TouchableOpacity>
         </View>
         <View>
+          <Text style={{ color: "#D9D9D9" }}>{`${timeAgo}`}</Text>
           <Text
             style={
               imageUrl ? style.contentWithoutImage : style.contentWithoutImage
@@ -188,9 +233,43 @@ export const LayoutTweet: React.FC<LayoutTweetProps> = ({
               placeholder="Thêm bình luận"
               placeholderTextColor="grey"
               multiline={true}
+              value={contentComment}
+              onChangeText={(text) => setContentComment(text)}
             />
           </View>
+          <Pressable
+            style={{
+              justifyContent: "center",
+              alignItems: "center",
+              backgroundColor: "#3B82F6",
+              borderRadius: 8,
+              width: 35,
+              height: 35,
+            }}
+            onPress={() => {
+              handleComment(), navigation.navigate("comment");
+            }}
+          >
+            <Feather name="send" size={20} color="white" />
+          </Pressable>
         </View>
+        <FlatList
+          data={Array.isArray(comments) ? comments.slice(0, 3) : []}
+          keyExtractor={(item) => item._id}
+          renderItem={({ item }) => (
+            <ListComment
+              content={item.content}
+              imageUrl={
+                Array.isArray(imageAuthor?.data)
+                  ? imageAuthor.data.find(
+                      (user: any) => user.userName === item.userName
+                    )?.imageAvatar
+                  : null
+              }
+              userName={item.userName}
+            />
+          )}
+        />
       </View>
     </View>
   );
