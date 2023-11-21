@@ -429,6 +429,7 @@ export const LayoutTweet: React.FC<LayoutTweetProps> = ({
           keyExtractor={(item) => item._id}
           renderItem={({ item }) => (
             <ListComment
+            tweetId={tweetId}
               content={item.content}
               imageUrl={
                 Array.isArray(imageAuthor?.data)
@@ -438,6 +439,7 @@ export const LayoutTweet: React.FC<LayoutTweetProps> = ({
                   : null
               }
               userName={item.userName}
+              commentId={item._id}
             />
           )}
         />

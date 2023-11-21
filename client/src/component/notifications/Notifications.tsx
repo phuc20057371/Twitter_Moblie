@@ -3,7 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { ListNotifications } from "./ListNotification";
 import { notificationsAction } from "../../redux/actions/notificationsAction";
 import { customFetch } from "../../utilities/customFetch";
-export const Notifications = () => {
+import { userSearchActions } from "../../redux/actions/userSearchActions";
+export const Notifications = ({navigation}:{navigation:any}) => {
   const { data: notifications } = useSelector(
     (state: any) => state.notifications
   );
@@ -17,6 +18,16 @@ export const Notifications = () => {
       dispatch(notificationsAction.updateNotification.fulfill(response.data.notifications))
     }else dispatch(notificationsAction.updateNotification.errors(response?.error))
   }
+  const handleUser = async (userName: string) => {
+    dispatch(userSearchActions.userSearch.pending());
+    const response = await customFetch({}, `/profile/user/${userName}`);
+    if (response?.data) {
+      dispatch(userSearchActions.userSearch.fulfill(response.data));
+      navigation.navigate('user', { userName: userName }); 
+    } else {
+      dispatch(userSearchActions.userSearch.errors(response?.error));
+    }
+  };
   const imageAvatarAuthor = useSelector((state: any) => state.imageAuthor);
   return (
     <ScrollView style={{ marginLeft: 10, marginRight: 10, backgroundColor: "white", height:'100%' }}>
@@ -32,7 +43,7 @@ export const Notifications = () => {
       <FlatList
         data={notifications}
         renderItem={({ item }) => (
-          <Pressable style={{backgroundColor:item.isRead ? 'white' :'#33CCFF'}} onPress={()=>handleUpdateNotifications(item._id)}>
+          <Pressable style={{backgroundColor:item.isRead ? 'white' :'#33CCFF'}} onPress={()=>{handleUpdateNotifications(item._id), item.type === 'follow' ? handleUser(item.fromUserName) : navigation.navigate('tweetDetail',{tweetId:item.tweetId})}}>
             <ListNotifications
               userName={item.fromUserName}
               message={item.message}
