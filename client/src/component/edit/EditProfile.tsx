@@ -16,17 +16,17 @@ export const EditProfile = ({navigation}:{navigation:any}) => {
     }));
   };
 
-  const distpach = useDispatch();
+  const dispatch = useDispatch();
   const handleSave = async () => {
     console.log("form data ", formData)
-    distpach(userActions.updateUserProfile.pending())
+    dispatch(userActions.updateUserProfile.pending())
     const response = await customFetch({method:'PATCH', data:formData}, '/profile')
     if(response?.data){
       console.log("update user", response.data)
-      distpach(userActions.updateUserProfile.fulfill(response.data))
+      dispatch(userActions.updateUserProfile.fulfill(response.data))
       navigation.navigate('profile')
     }
-    else distpach(userActions.updateUserProfile.errors(response?.data))
+    else dispatch(userActions.updateUserProfile.errors(response?.data))
   };
   return (
     <View style={style.container}>

@@ -8,36 +8,35 @@ import { customFetch } from "../../../utilities/customFetch";
 import { ListUser } from "../../list/ListUser";
 
 function Search({ navigation }: { navigation: any }) {
-  const distpach = useDispatch();
+  const dispatch = useDispatch();
   const users = useSelector((state: any) => state.users);
   const handleInputChange = async (text: string) => {
     if (text) {
       handleSearch({ query: text });
     } else {
-      distpach(userSearchActions.userSearch.fulfill([]));
+      dispatch(userSearchActions.userSearch.fulfill([]));
     }
   };
   const handleSearch = async (query: { query: string }) => {
-    distpach(userSearchActions.userSearch.pending());
+    dispatch(userSearchActions.userSearch.pending());
     const response = await customFetch(
       { method: "POST", data: query },
       "/search"
     );
     if (response?.data)
-      distpach(userSearchActions.userSearch.fulfill(response.data));
-    else distpach(userSearchActions.userSearch.errors(response?.error));
+      dispatch(userSearchActions.userSearch.fulfill(response.data));
+    else dispatch(userSearchActions.userSearch.errors(response?.error));
   };
   const imageAvatarAuthor = useSelector((state: any) => state.imageAuthor);
   console.log("dataa usser search ", users.data);
   const handleUser = async (userName: string) => {
-    distpach(userSearchActions.userSearch.pending());
+    dispatch(userSearchActions.userSearch.pending());
     const response = await customFetch({}, `/profile/user/${userName}`);
     if (response?.data) {
-      distpach(userSearchActions.userSearch.fulfill(response.data));
-      navigation.navigate('user', { userName: userName }); // Sửa đổi ở đây
-      console.log("userName router ", userName)
+      dispatch(userSearchActions.userSearch.fulfill(response.data));
+      navigation.navigate('user', { userName: userName }); 
     } else {
-      distpach(userSearchActions.userSearch.errors(response?.error));
+      dispatch(userSearchActions.userSearch.errors(response?.error));
     }
   };
   return (

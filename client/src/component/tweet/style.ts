@@ -33,7 +33,10 @@ export const style = StyleSheet.create({
   },
   contentWithoutImage: {
     height: "auto",
-    // Các style khác nếu cần
+    backgroundColor: "white",
+    flex: 1,
+    width: 296,
+    textAlignVertical: "top",
   },
   textName: {
     fontWeight: "bold",
@@ -90,5 +93,7 @@ export const style = StyleSheet.create({
     width: 180,
     height: 50,
     backgroundColor: "white",
+    flex: 1,
+    textAlignVertical: "top",
   },
 });

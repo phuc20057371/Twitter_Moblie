@@ -6,13 +6,13 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import { EditProfile } from "./src/component/edit/EditProfile";
 import MyTabs from "./src/component/home/Home";
 import AppHeader from "./src/component/home/AppHeader";
-import TweetDetail from "./src/component/home/tab/tweet/TweetDetail";
 import { useEffect } from "react";
 import { Provider } from "react-redux";
 import { store } from "./src/redux/store";
 import { ProfileUser } from "./src/component/profile/ProfileUser";
 import { io } from "socket.io-client";
 import Tweet from "./src/component/home/tab/tweet/Tweet";
+import { TweetDetail } from "./src/component/tweet/TweetDetail";
 
 export default function App() {
   const Stack = createStackNavigator();
@@ -64,7 +64,7 @@ export default function App() {
           />
           <Stack.Screen name="user" component={ProfileUser} />
           <Stack.Screen name="Tweet" component={Tweet} />
-          <Stack.Screen name="TweetDetail" component={TweetDetail} />
+          <Stack.Screen name="tweetDetail" component={TweetDetail} />
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>

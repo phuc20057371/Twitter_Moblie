@@ -9,6 +9,7 @@ import { useDispatch } from "react-redux";
 import { customFetch } from "../../utilities/customFetch";
 import { imageActions } from "../../redux/actions/imageAction";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { isTokenExpired } from "../../utilities/checkToken";
 export const LoginForm = ({ navigation }: { navigation: any }) => {
   const [formData, setFormData] = useState({
     userName: "",
@@ -18,7 +19,7 @@ export const LoginForm = ({ navigation }: { navigation: any }) => {
   const handleSignupForm = () => {
     navigation.navigate("signup");
   };
-  const distpach = useDispatch();
+  const dispatch = useDispatch();
  
   const handleLogin = async () => {
     const response = await customFetch(
@@ -36,16 +37,19 @@ export const LoginForm = ({ navigation }: { navigation: any }) => {
   };
 
   const loadDataImage = async () => {
-    distpach(imageActions.getImage.pending());
+    dispatch(imageActions.getImage.pending());
     const response = await customFetch({}, "/profile/imageAvatar");
-    if (response?.data) distpach(imageActions.getImage.fulfill(response.data));
-    else distpach(imageActions.getImage.errors(response?.error));
+    if (response?.data) dispatch(imageActions.getImage.fulfill(response.data));
+    else dispatch(imageActions.getImage.errors(response?.error));
   };
   useEffect(() => {
     loadDataImage();
     const checkToken = async () =>{
       const token = await AsyncStorage.getItem('token')
-      if(token){
+      if(isTokenExpired(token)){
+        navigation.navigate('login')
+        AsyncStorage.removeItem('token')
+      }else if(!isTokenExpired(token)){
         navigation.navigate('Tabs')
       }
     }
@@ -63,7 +67,7 @@ export const LoginForm = ({ navigation }: { navigation: any }) => {
         <View
           style={{ flex: 0.3, alignItems: "center", justifyContent: "center" }}
         >
-          <Text style={{ textTransform: "uppercase" }}>login</Text>
+          <Text style={{ textTransform: "uppercase", fontWeight:'700' }}>login</Text>
         </View>
         <View>
           <View style={style.conatinerInput}>

@@ -7,6 +7,7 @@ import { imageReducer } from "./reducers/imageReducer";
 import { userSearchReducer } from "./reducers/userSearchReducer";
 import { bookmarkReducer } from "./reducers/bookmarkReducer";
 import { notificationReducer } from "./reducers/notificationReducer";
+import { tweetDetailReducer } from "./reducers/tweetDetailReducer";
 export const store = configureStore({
   reducer: combineReducers({
     login: loginReducer,
@@ -15,7 +16,8 @@ export const store = configureStore({
     imageAuthor: imageReducer,
     users: userSearchReducer,
     bookmarks: bookmarkReducer,
-    notifications: notificationReducer
+    notifications: notificationReducer,
+    tweetDetail:tweetDetailReducer
   }),
   devTools: { name: "tweeter" },
 });

@@ -15,11 +15,10 @@ import { notificationsAction } from "../../redux/actions/notificationsAction";
 import { tweetAction } from "../../redux/actions/tweetAction";
 import { userActions } from "../../redux/actions/userAction";
 import { bookmarkAction } from "../../redux/actions/bookmarkAction";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 const Tab = createMaterialBottomTabNavigator();
 
 function MyTabs() {
-  const distpach = useDispatch();
+  const dispatch = useDispatch();
   const { data: notifications } = useSelector((state: any) => state.notifications);
   const unreadNotifications = notifications && notifications.filter((notification: any) => !notification?.isRead);
   const unreadCount = unreadNotifications ? unreadNotifications.length : 0;
@@ -29,31 +28,31 @@ function MyTabs() {
   const {data:user} = useSelector((state:any)=>state.user)
   const name = user && user?.userName
   const loadNotifications = async () => {
-    distpach(notificationsAction.getNotification.pending());
+    dispatch(notificationsAction.getNotification.pending());
     const response = await customFetch({}, "/notification");
     if (response?.data) {
-      distpach(
+      dispatch(
         notificationsAction.getNotification.fulfill(response.data.notifications)
       );
     } else
-    distpach(notificationsAction.getNotification.errors(response?.error));
+    dispatch(notificationsAction.getNotification.errors(response?.error));
   };
   const loadBookmark = async ()=>{
-    distpach(bookmarkAction.getBookmarkByUserName.pending())
+    dispatch(bookmarkAction.getBookmarkByUserName.pending())
     const response = await customFetch({},`/bookmark`)
     if(response?.data) {
       console.log("object bookmarks ", response.data)
-      distpach(bookmarkAction.getBookmarkByUserName.fulfill(response.data))
+      dispatch(bookmarkAction.getBookmarkByUserName.fulfill(response.data))
     }
-    else distpach(bookmarkAction.getBookmarkByUserName.errors(response?.error))
+    else dispatch(bookmarkAction.getBookmarkByUserName.errors(response?.error))
   }
   const loadDataUser = async ()=>{
-    distpach(userActions.getProfileUser.pending())
+    dispatch(userActions.getProfileUser.pending())
     const response = await customFetch({},'/profile')
     if(response?.data){
-      distpach(userActions.getProfileUser.fulfill(response.data))
+      dispatch(userActions.getProfileUser.fulfill(response.data))
     }else{
-      distpach(userActions.getProfileUser.error(response?.error))
+      dispatch(userActions.getProfileUser.error(response?.error))
     }
   }
   React.useEffect(()=>{
@@ -65,23 +64,23 @@ function MyTabs() {
     socket.connect();
     socket.emit('joinRoom', { room: name });
     socket.on('follow', (data) => {
-      distpach(notificationsAction.createNotification.fulfill(data.notification.notifications));
+      dispatch(notificationsAction.createNotification.fulfill(data.notification.notifications));
     });
     socket.on('like', (data) => {
       if(data.flag){
         console.log("falg ", data.flag)
         console.log("noti ", data.notification)
-        distpach(notificationsAction.getNotification.fulfill(data.notification.notifications));
-        distpach(tweetAction.updateTweet.fulfill(data.data))
+        dispatch(notificationsAction.getNotification.fulfill(data.notification.notifications));
+        dispatch(tweetAction.updateTweet.fulfill(data.data))
         console.log("data data ",data.data)
       }else {
         console.log("falg ", data.flag)
-        distpach(tweetAction.updateTweet.fulfill(data.data))
+        dispatch(tweetAction.updateTweet.fulfill(data.data))
       }
     });
     socket.on('comment', (data) => {
-      distpach(notificationsAction.getNotification.fulfill(data.notification.notifications));
-      distpach(tweetAction.updateTweet.fulfill(data.data))
+      dispatch(notificationsAction.getNotification.fulfill(data.notification.notifications));
+      dispatch(tweetAction.updateTweet.fulfill(data.data))
       console.log("data ",data.data)
     });
     return () => {

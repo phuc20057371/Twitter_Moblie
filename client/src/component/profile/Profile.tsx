@@ -37,15 +37,15 @@ export const Profile = ({ navigation }: { navigation: any }) => {
     user.data && user.data?.imageAvatar ? user.data.imageAvatar : "";
   const name =
     user.data?.userName === undefined ? "user name" : user.data?.userName;
-  const distpach = useDispatch();
+  const dispatch = useDispatch();
   const loadTweetUser = async () => {
     if (name === undefined) return;
-    distpach(tweetAction.getTweet.pending());
+    dispatch(tweetAction.getTweet.pending());
     const response = await customFetch({}, `/profile/tweet/${name}`);
     if (response?.data) {
-      distpach(tweetAction.getTweet.fulfill(response.data));
+      dispatch(tweetAction.getTweet.fulfill(response.data));
       console.log("dataa twweet ", response?.data);
-    } else distpach(tweetAction.getTweet.errors(response?.error));
+    } else dispatch(tweetAction.getTweet.errors(response?.error));
   };
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
@@ -88,7 +88,7 @@ export const Profile = ({ navigation }: { navigation: any }) => {
     }
   };
   const handleSave = async () => {
-    distpach(userActions.updateUserProfile.pending());
+    dispatch(userActions.updateUserProfile.pending());
     const formData = new FormData();
     if (status === "cover") {
       if (imageCover) {
@@ -110,10 +110,10 @@ export const Profile = ({ navigation }: { navigation: any }) => {
         `/profile/coverimage`
       );
       if (response?.data) {
-        distpach(userActions.updateUserProfile.fulfill(response.data.users));
+        dispatch(userActions.updateUserProfile.fulfill(response.data.users));
         setIsEdit(false);
         setImageCover(null);
-      } else distpach(userActions.updateUserProfile.errors(response?.error));
+      } else dispatch(userActions.updateUserProfile.errors(response?.error));
     } else if(status === 'avatar'){
       if(imageAvatar){
         const localUri = imageAvatar;
@@ -134,11 +134,11 @@ export const Profile = ({ navigation }: { navigation: any }) => {
         `/profile/avatar`
       );
       if (response?.data) {
-        distpach(userActions.updateUserProfile.fulfill(response.data.users));
-        distpach(imageActions.updateAuthor.fulfill(response.data.users))
+        dispatch(userActions.updateUserProfile.fulfill(response.data.users));
+        dispatch(imageActions.updateAuthor.fulfill(response.data.users))
         setIsEdit(false);
         setImageAvatar(null);
-      } else distpach(userActions.updateUserProfile.errors(response?.error));
+      } else dispatch(userActions.updateUserProfile.errors(response?.error));
     }
   };
   const handleEdit = ()=>{

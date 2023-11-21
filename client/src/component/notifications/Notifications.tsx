@@ -19,7 +19,7 @@ export const Notifications = () => {
   }
   const imageAvatarAuthor = useSelector((state: any) => state.imageAuthor);
   return (
-    <ScrollView style={{ marginLeft: 10, marginRight: 10, backgroundColor: "white" }}>
+    <ScrollView style={{ marginLeft: 10, marginRight: 10, backgroundColor: "white", height:'100%' }}>
       <Text
         style={{
           fontWeight: "bold",

@@ -15,14 +15,14 @@ const footer = () => {
   );
 };
 function Feed({ navigation }: { navigation: any }) {
-  const distpach = useDispatch();
+  const dispatch = useDispatch();
   const loadDataTweet = async () => {
-    distpach(tweetAction.getTweet.pending());
+    dispatch(tweetAction.getTweet.pending());
     const response = await customFetch({}, "/tweet");
     if (response?.data) {
-      distpach(tweetAction.getTweet.fulfill(response.data))
+      dispatch(tweetAction.getTweet.fulfill(response.data))
     }else {
-      distpach(tweetAction.getTweet.errors(response?.error))
+      dispatch(tweetAction.getTweet.errors(response?.error))
     }
   };
   useEffect(() => {
@@ -52,7 +52,7 @@ function Feed({ navigation }: { navigation: any }) {
             imageUrl={item.image}
             likes={item.likes}
             comments={item.comments}
-            selected={false}
+            selected={true}
           />
         )}
       />

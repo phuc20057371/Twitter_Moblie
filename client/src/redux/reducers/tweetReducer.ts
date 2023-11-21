@@ -1,4 +1,5 @@
 import IData from "../../interface/IData";
+import { formatTweetDate, sortComments } from "../../utilities/FormatDate";
 
 const initialState = {
   data: null,
@@ -10,27 +11,7 @@ type apiAction = {
   type: string;
   payload: any;
 };
-const sortComments = (tweets) => {
-  return tweets.map((tweet) => ({
-    ...tweet,
-    comments: tweet.comments?.sort((a, b) =>
-      new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-    ),
-  }));
-};
 
-function formatTweetDate(dateTweet: any) {
-  const options: Intl.DateTimeFormatOptions = {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  };
-  const formattedDate = new Date(dateTweet).toLocaleDateString(
-    "vi-VN",
-    options
-  );
-  return formattedDate.replace(/,/g, "");
-}
 export const tweetRedudcer = (state = initialState, action: apiAction) => {
   switch (action.type) {
     case "GET_TWEET_PENDING":
@@ -95,6 +76,19 @@ export const tweetRedudcer = (state = initialState, action: apiAction) => {
           };
     
         case 'CREATE_TWEET_ERROR':
+          return { ...state, loading: false, error: action.payload };
+        case 'DELETE_TWEET_PENDING':
+          return { ...state, loading: true, error: null };
+        case 'DELETE_TWEET_FULFILL':
+          const tweetDelete = action.payload
+          const tweetDidDelete = (state.data || []).filter((tweet:any)=>tweet._id !== tweetDelete)
+          return{
+            ...state,
+            loading:false,
+            data:tweetDidDelete,
+            error:null
+          }
+        case 'DELETE_TWEET_ERROR':
           return { ...state, loading: false, error: action.payload };
     default: return state
   }

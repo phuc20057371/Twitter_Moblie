@@ -32,10 +32,10 @@ function Tweet({ navigation }: { navigation: any }) {
       setImage(result.uri);
     }
   };
-  const distpach = useDispatch();
+  const dispatch = useDispatch();
   const test = async () => {
     if (content.trim() === "" && !image) return;
-    distpach(tweetAction.createTweet.pending())
+    dispatch(tweetAction.createTweet.pending())
     const formData = new FormData();
     formData.append("fullName", user.data.fullName);
     formData.append("userName", user.data.userName);
@@ -59,10 +59,10 @@ function Tweet({ navigation }: { navigation: any }) {
       "/tweet"
     );
     if (response?.data) {
-        distpach(tweetAction.createTweet.fulfill(response.data))
+        dispatch(tweetAction.createTweet.fulfill(response.data))
         navigation.navigate('Feed')
     }
-    else distpach(tweetAction.createTweet.errors(response?.error))
+    else dispatch(tweetAction.createTweet.errors(response?.error))
   };
 
   return (

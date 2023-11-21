@@ -144,45 +144,47 @@ export const updateCountBookmark: RequestHandler = async (req, res) => {
 export const updateTweet: RequestHandler = async (req, res) => {
   try {
     const user = res.locals.user;
-    const { content, _id, deleteImage, deleteContent } = req.body;
+    const { content, _id } = req.body;
     const file = req.file;
     const tweet = await Tweet.findOne({ _id, userName: user.userName });
+
     if (!tweet) {
-      throw new Error('Tweet not found');
-    }
-    if (deleteImage && tweet.cloudinaryId) {
-      await cloudinary.uploader.destroy(tweet.cloudinaryId);
-      tweet.cloudinaryId = '';
-      tweet.image = '';
+      throw new Error('Tweet không tồn tại');
     }
 
-    if (deleteContent) {
-      tweet.content = '';
-    } else {
+    // Kiểm tra và cập nhật nội dung nếu có
+    if (content !== undefined) {
       tweet.content = content;
     }
-    let result;
+
+    // Kiểm tra và cập nhật ảnh nếu có
     if (file) {
-      result = await cloudinary.uploader.upload(file.path, {
-        folder: 'twitter-image',
-      });
+      // Xóa ảnh hiện tại nếu có
       if (tweet.cloudinaryId) {
         await cloudinary.uploader.destroy(tweet.cloudinaryId);
       }
-    }
-    if (result) {
+
+      // Tải ảnh mới lên
+      const result = await cloudinary.uploader.upload(file.path, {
+        folder: 'twitter-image',
+      });
+
       tweet.image = result.secure_url;
       tweet.cloudinaryId = result.public_id;
     }
 
-    await tweet.save();
+    // Lưu tweet chỉ nếu có cập nhật nội dung hoặc ảnh
+    if (content !== undefined || file) {
+      await tweet.save();
+    }
 
     res.status(200).json(tweet);
   } catch (error) {
-    console.error('Error updating tweet:', error);
-    res.status(500).json({ message: 'Internal server error' });
+    console.error('Lỗi khi cập nhật tweet:', error);
+    res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });
   }
 };
+
 
 export const updateTweetNumber: RequestHandler = async (req, res) => {
   try {
