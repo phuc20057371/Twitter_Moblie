@@ -19,7 +19,7 @@ export const authen = async (req: Request, res: Response, next: NextFunction) =>
     }
     console.log(userFind, 'gygdyed');
     const token = jwt.sign(
-      { userName: userFind.userName, fullName: userFind.fullName, bookmarks: userFind.bookmarks },
+      { userName: userFind.userName, fullName: userFind.fullName },
       secretKey,
       {
         expiresIn: process.env.TIME_TOKEN,

@@ -1,4 +1,4 @@
-import axios, { AxiosRequestConfig, AxiosError } from 'axios'; // Import axios and AxiosError
+import axios, { AxiosRequestConfig } from 'axios'; // Import axios and AxiosError
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const customFetch = async ({ method = 'GET', data = {}, headers }: AxiosRequestConfig, path?: string) => {

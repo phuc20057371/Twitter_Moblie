@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { View, Image, Text, Pressable } from "react-native";
 import DropdownComponent from "../../utilities/dropdown";
 import { TextInput } from "react-native-paper";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { tweetAction } from "../../redux/actions/tweetAction";
 import { customFetch } from "../../utilities/customFetch";
 import AntDesign from "react-native-vector-icons/AntDesign";
@@ -22,6 +22,9 @@ export const ListComment: React.FC<IComment> = ({
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [newContent, setNewContent] = useState("");
+  const user = useSelector((state: any) => state.user)
+  const name =
+  user.data?.userName === undefined ? "user name" : user.data?.userName;
   const dispatch = useDispatch();
   const handleSave = async () =>{
     dispatch(tweetAction.updateTweet.pending())
@@ -106,12 +109,12 @@ export const ListComment: React.FC<IComment> = ({
                 </Text>
               </Pressable>
             </View>
-          ) : (
+          ) : name === userName ? (
             <DropdownComponent
-              onDelete={handleDelete}
-              onEdit={() => setIsEditing(true)}
-            />
-          )}
+            onDelete={handleDelete}
+            onEdit={() => setIsEditing(true)}
+          />
+          ): null}
         </View>
       </View>
     </View>

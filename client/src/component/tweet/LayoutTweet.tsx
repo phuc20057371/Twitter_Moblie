@@ -143,6 +143,7 @@ export const LayoutTweet: React.FC<LayoutTweetProps> = ({
     if (data) {
       dispatch(tweetAction.updateTweet.fulfill(data));
       setContentComment("");
+      if(name === userName) return
       if (socket && socket.connected) {
         socket.emit("comment", { room, userName, name, tweetId, data });
       } else {

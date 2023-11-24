@@ -7,13 +7,7 @@ import { LayoutTweet } from "../../tweet/LayoutTweet";
 import { useDispatch, useSelector } from "react-redux";
 import { tweetAction } from "../../../redux/actions/tweetAction";
 import { customFetch } from "../../../utilities/customFetch";
-const footer = () => {
-  return (
-    <View style={{ flex: 1, height: 500, backgroundColor: "yellow" }}>
-      <Text>Footer</Text>
-    </View>
-  );
-};
+
 function Feed({ navigation }: { navigation: any }) {
   const dispatch = useDispatch();
   const loadDataTweet = async () => {
@@ -40,7 +34,6 @@ function Feed({ navigation }: { navigation: any }) {
         ListHeaderComponent={() => (
           <SearchUpload navigation={navigation} user={user} />
         )}
-        ListFooterComponent={footer}
         renderItem={({ item }) => (
           <LayoutTweet
             navigation={navigation}

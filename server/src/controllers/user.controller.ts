@@ -206,7 +206,6 @@ export const updateFollow: RequestHandler = async (req, res) => {
     if (!userFind || !newUser) throw Error;
 
     const isAlreadyFollowing = userFind.following.some((followingUser) => followingUser.userName === userName);
-    const createAt = new Date().toISOString();
     if (isAlreadyFollowing) {
       userFind.following = userFind.following.filter((followingUser) => followingUser.userName !== userName);
       newUser.followers = newUser.followers.filter((follower) => follower.userName !== userFind.userName);
