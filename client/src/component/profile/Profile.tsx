@@ -17,6 +17,7 @@ import * as React from "react";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import { userActions } from "../../redux/actions/userAction";
 import { imageActions } from "../../redux/actions/imageAction";
+import SearchUpload from "../search/searchUpload";
 export const Profile = ({ navigation }: { navigation: any }) => {
   const user = useSelector((state: any) => state.user);
   const [imageCover, setImageCover] = React.useState<string | null>(null);
@@ -142,7 +143,7 @@ export const Profile = ({ navigation }: { navigation: any }) => {
     }
   };
   const handleEdit = ()=>{
-    navigation.navigate('editprofile')
+    navigation.navigate('settings')
   }
   return (
     <ScrollView>
@@ -212,7 +213,7 @@ export const Profile = ({ navigation }: { navigation: any }) => {
                   </View>
                 ) : (
                   <Pressable style={style.button} onPress={handleEdit}>
-                    <Text style={style.textButton}>Edit Profile</Text>
+                    <Text style={style.textButton}>Settings</Text>
                   </Pressable>
                 )}
               </View>
@@ -222,6 +223,9 @@ export const Profile = ({ navigation }: { navigation: any }) => {
         <View>
           <FlatList
             data={tweetList}
+            ListHeaderComponent={() => (
+              <SearchUpload navigation={navigation} user={user.data} />
+            )}
             renderItem={({ item }) => (
               <LayoutTweet
                 tweetId={item._id}

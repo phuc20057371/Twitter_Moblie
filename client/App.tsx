@@ -49,7 +49,7 @@ export default function App() {
             }}
           />
           <Stack.Screen
-            name="editprofile"
+            name="settings"
             component={EditProfile}
             options={{
               headerLeft: ({ onPress }) => (

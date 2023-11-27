@@ -22,9 +22,9 @@ export const SignupForm = ({navigation}:{navigation:any}) => {
     const handleSignup = async()=>{
       if(formData.email.trim()==="" || formData.fullName.trim()===""||formData.password.trim()==="" ||formData.userName.trim()==="") {
         console.log("không được để trống")
-        MessageError("Vui lòng thử lại")
         return
       }
+
       const response = await customFetch({method:'POST', data:formData},`/register`)
       if(response?.data){
         navigation.navigate('login')

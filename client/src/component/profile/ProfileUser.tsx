@@ -14,6 +14,7 @@ import { customFetch } from "../../utilities/customFetch";
 import { LayoutTweet } from "../tweet/LayoutTweet";
 import * as React from "react";
 import { userActions } from "../../redux/actions/userAction";
+import { io } from "socket.io-client";
 export const ProfileUser = ({
   route,
   navigation,
@@ -24,6 +25,9 @@ export const ProfileUser = ({
   const users = useSelector((state: any) => state.users);
   const author = useSelector((state: any) => state.user);
   const user = users.data[0];
+  const socket = io("http://localhost:8080", {
+    autoConnect: false,
+  });
   console.log("userName ", user);
   const { userName } = route.params;
   console.log("object userName",userName)
@@ -33,7 +37,8 @@ export const ProfileUser = ({
   const followers = user?.followers ? user.followers.length : 0;
   const coverimage = user?.imageCover || "";
   const avatarimage = user?.imageAvatar || "";
-  const name = user?.userName || "user name";
+  const nameMe = user?.userName || "user name";
+  const name = author.data && author.data.userName;
   const userFollowing = author.data ? author.data?.following : [];
   const dispatch = useDispatch();
   useEffect(() => {
@@ -73,6 +78,19 @@ export const ProfileUser = ({
     if (response?.data) {
       console.log("payload ", response?.data);
       dispatch(userActions.updateUserProfile.fulfill(response?.data));
+      const room = userName;
+      if (socket && socket.connected) {
+        console.log("emit follow ", name);
+        socket.emit("follow", { userName, room, name });
+      } else {
+        console.log("Socket is not connected. Connecting...");
+        socket.connect();
+        socket.once("connect", () => {
+          console.log("Socket connected. Emitting follow event.");
+          console.log("emit follow ", name);
+          socket.emit("follow", { userName, room, name });
+        });
+      }
     } else dispatch(userActions.updateUserProfile.errors(response?.error));
   };
   return (
@@ -118,7 +136,7 @@ export const ProfileUser = ({
                     onPress={() => handleFollowing(userName)}
                   >
                     <Text style={style.textButton}>{`${
-                      isUserFollowing(name) ? "Following" : "Follow"
+                      isUserFollowing(nameMe) ? "Following" : "Follow"
                     }`}</Text>
                   </Pressable>
                 )}

@@ -15,7 +15,7 @@ export const LoginForm = ({ navigation }: { navigation: any }) => {
     userName: "",
     password: "",
   });
-
+  const [error,setError] = useState("")
   const handleSignupForm = () => {
     navigation.navigate("signup");
   };
@@ -33,7 +33,9 @@ export const LoginForm = ({ navigation }: { navigation: any }) => {
       if (token) {
         navigation.navigate("Tabs");
       }
-    } 
+    } else{
+      setError("Sai username hoặc password vui lòng thử lại")
+    }
   };
 
   const loadDataImage = async () => {
@@ -94,6 +96,7 @@ export const LoginForm = ({ navigation }: { navigation: any }) => {
           </View>
         </View>
         <View>
+          {error && (<Text style={{color:'red', width:249}}>{`${error}`}</Text>)}
           <View style={style.conatinerInput}>
             <Pressable style={style.buttonLogin} onPress={handleLogin}>
               <Text style={style.text}>login</Text>

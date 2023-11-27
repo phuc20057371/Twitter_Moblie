@@ -12,6 +12,18 @@ type apiAction = {
   type: string;
   payload: any;
 };
+const sortByCreatedAtDesc = (data: any[]) => {
+  return data.sort((a, b) => {
+    const dateA = new Date(a.createdAt);
+    const dateB = new Date(b.createdAt);
+
+    if (isNaN(dateA.getTime()) || isNaN(dateB.getTime())) {
+      return 0; 
+    }
+
+    return dateB.getTime() - dateA.getTime();
+  });
+};
 
 export const notificationReducer = (
   state: state = initialState,
@@ -23,7 +35,7 @@ export const notificationReducer = (
     case "GET_NOTIFICATION_FULFILL":
       return {
         ...state,
-        data: action.payload,
+        data: sortByCreatedAtDesc(action.payload),
         loading: false,
         error: null,
       };
@@ -32,10 +44,9 @@ export const notificationReducer = (
     case "CREATE_NOTIFICATION_PENDING":
       return { ...state, loading: true, error: null };
     case "CREATE_NOTIFICATION_FULFILL":
-      const newNoti = action.payload;
       return {
         ...state,
-        data: newNoti,
+        data:sortByCreatedAtDesc(action.payload),
         loading: false,
         error: null,
       };
@@ -46,7 +57,7 @@ export const notificationReducer = (
     case "UPDATE_NOTIFICATION_FULFILL":
       return {
         ...state,
-        data:action.payload,
+        data:sortByCreatedAtDesc(action.payload),
         loading:false,
         error:null
       }

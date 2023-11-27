@@ -1,3 +1,5 @@
+import { formatDateJoin } from "../../utilities/FormatDate";
+
 const initialState = {
     data: null,
     loading: false,
@@ -13,10 +15,14 @@ const initialState = {
       case 'GET_USERS_PENDING':
         return { ...state, loading: true, error: null };
       case 'GET_USERS_FULFILL':
+        const formattedData = action.payload.map((user) => ({
+          ...user,
+          dateJoined: formatDateJoin(user.dateJoined), // Adjust this based on your data structure
+        }));
         return {
           ...state,
           loading: false,
-          data: action.payload,
+          data: formattedData,
           error: null,
         };
       case 'GET_USERS_ERROR':

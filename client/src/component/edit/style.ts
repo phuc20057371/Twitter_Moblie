@@ -1,9 +1,23 @@
 import { StyleSheet } from "react-native";
 
 export const style = StyleSheet.create({
+    containerLogout:{
+        width: 320,
+        height: 60,
+        borderWidth: 1,
+        alignItems:'center',
+        borderColor: '#D9D9D9',
+        borderRadius: 10,
+        backgroundColor:'#FFFF',
+        justifyContent:'center',
+        shadowColor:'#D9D9D9',
+        shadowOffset:{width:3, height:10},
+        shadowRadius:10,
+        marginTop:10
+    },
     loginContainer:{
         width: 320,
-        height: 360,
+        height: 'auto',
         borderWidth: 1,
         borderColor: '#D9D9D9',
         borderRadius: 10,
@@ -54,6 +68,17 @@ export const style = StyleSheet.create({
         borderBottomRightRadius:10,
     },
     buttonSignup:{
+        backgroundColor:'#FF0000',
+        justifyContent:'center',
+        alignItems:'center',
+        width:250,
+        height:41,
+        borderTopLeftRadius:10,
+        borderTopRightRadius:10,
+        borderBottomLeftRadius:10,
+        borderBottomRightRadius:10,
+    },
+    buttonLogout:{
         backgroundColor:'#FF0000',
         justifyContent:'center',
         alignItems:'center',
